@@ -1,6 +1,7 @@
 ## Kotlin for Forge 5.0.0
 - Updated to 1.20.5 NeoForge (Forge hasn't updated yet)
 - Updated to Kotlin 1.9.23, serialization 1.6.3, coroutines 1.8.0
+- Kotlin libraries are now included using JarJar instead of shading
 - Check the README on GitHub for updated instructions
 
 ## Kotlin for Forge 4.10.0
