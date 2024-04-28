@@ -1,7 +1,9 @@
 package thedarkcolour.kotlinforforge.neoforge
 
 import net.neoforged.api.distmarker.Dist
+import net.neoforged.fml.Bindings
 import net.neoforged.fml.Logging
+import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.loading.FMLEnvironment
 import net.neoforged.fml.loading.moddiscovery.ModAnnotation
@@ -13,7 +15,7 @@ import java.util.*
  * Automatically registers `object` classes to
  * Kotlin for Forge's event buses.
  *
- * This also allows [Mod.EventBusSubscriber] to be used as a file-wide annotation,
+ * This also allows [EventBusSubscriber] to be used as a file-wide annotation,
  * registering any top-level functions annotated with @SubscribeEvent to the event bus.
  *
  * Example:
@@ -30,7 +32,7 @@ import java.util.*
  */
 public object AutoKotlinEventBusSubscriber {
     // EventBusSubscriber annotation
-    private val EVENT_BUS_SUBSCRIBER: Type = Type.getType(Mod.EventBusSubscriber::class.java)
+    private val EVENT_BUS_SUBSCRIBER: Type = Type.getType(EventBusSubscriber::class.java)
 
     /** The default (client & server) list of [Dist] enum holders. */
     private val DIST_ENUM_HOLDERS = listOf(
@@ -64,7 +66,7 @@ public object AutoKotlinEventBusSubscriber {
             val sides = EnumSet.noneOf(Dist::class.java).plus(sidesValue.map { eh -> Dist.valueOf(eh.value) })
             val modid = annotationData.annotationData.getOrDefault("modid", mod.modId)
             val busTargetHolder = annotationData.annotationData.getOrDefault("bus", ModAnnotation.EnumHolder(null, "FORGE")) as ModAnnotation.EnumHolder
-            val busTarget = Mod.EventBusSubscriber.Bus.valueOf(busTargetHolder.value)
+            val busTarget = EventBusSubscriber.Bus.valueOf(busTargetHolder.value)
 
             if (mod.modId == modid && FMLEnvironment.dist in sides) {
                 val kClass = Class.forName(annotationData.clazz.className, true, classLoader).kotlin
@@ -96,9 +98,9 @@ public object AutoKotlinEventBusSubscriber {
         }
     }
 
-    private fun registerTo(any: Any, target: Mod.EventBusSubscriber.Bus, mod: KotlinModContainer) {
-        if (target == Mod.EventBusSubscriber.Bus.FORGE) {
-            target.bus().get().register(any)
+    private fun registerTo(any: Any, target: EventBusSubscriber.Bus, mod: KotlinModContainer) {
+        if (target == EventBusSubscriber.Bus.GAME) {
+            Bindings.getGameBus().register(any)
         } else {
             mod.eventBus.register(any)
         }

@@ -9,14 +9,12 @@ import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.Logging
 import net.neoforged.fml.ModContainer
 import net.neoforged.fml.ModLoadingException
-import net.neoforged.fml.ModLoadingStage
 import net.neoforged.fml.event.IModBusEvent
 import net.neoforged.fml.javafmlmod.FMLModContainer
 import net.neoforged.fml.loading.FMLLoader
 import net.neoforged.neoforgespi.language.IModInfo
 import net.neoforged.neoforgespi.language.ModFileScanData
 import java.util.*
-import java.util.function.Consumer
 import java.util.function.Supplier
 
 public class KotlinModContainer(
@@ -32,7 +30,6 @@ public class KotlinModContainer(
     init {
         LOGGER.debug(Logging.LOADING, "Creating KotlinModContainer instance for $className")
 
-        activityMap[ModLoadingStage.CONSTRUCT] = Runnable(::constructMod)
         eventBus = BusBuilder.builder()
             .setExceptionHandler(::onEventFailed)
             .markerType(IModBusEvent::class.java)
@@ -40,15 +37,15 @@ public class KotlinModContainer(
             .build()
 
         val ctx = KotlinModLoadingContext(this)
-        contextExtension = Supplier {ctx}
+        contextExtension = Supplier { ctx }
 
         try {
             val layer = gameLayer.findModule(info.owningFile.moduleName()).orElseThrow()
             modClass = Class.forName(layer, className)
-            LOGGER.trace(Logging.LOADING, "Loaded modclass ${modClass.name} with ${modClass.classLoader}")
+            LOGGER.trace(Logging.LOADING, "Loaded modclass {} with {}", modClass.name, modClass.classLoader)
         } catch (t: Throwable) {
             LOGGER.error(Logging.LOADING, "Failed to load class $className", t)
-            throw ModLoadingException(info, ModLoadingStage.CONSTRUCT, "fml.modloading.failedtoloadmodclass", t)
+            throw ModLoadingException(info, "fml.modloading.failedtoloadmodclass", t)
         }
     }
 
@@ -64,7 +61,7 @@ public class KotlinModContainer(
         LOGGER.error(EventBusErrorMessage(event, busId, listeners, throwable))
     }
 
-    private fun constructMod() {
+    protected override fun constructMod() {
         try {
             LOGGER.trace(Logging.LOADING, "Loading mod instance ${getModId()} of type ${modClass.name}")
 
@@ -102,7 +99,7 @@ public class KotlinModContainer(
             LOGGER.trace("Loaded mod instance ${getModId()} of type ${modClass.simpleName}")
         } catch (throwable: Throwable) {
             LOGGER.error(Logging.LOADING, "Failed to create mod instance. ModID: ${getModId()}, class ${modClass.name}", throwable)
-            throw ModLoadingException(modInfo, ModLoadingStage.CONSTRUCT, "fml.modloading.failedtoloadmod", throwable, modClass)
+            throw ModLoadingException(modInfo, "fml.modloading.failedtoloadmod", throwable, modClass)
         }
 
         try {
@@ -112,7 +109,7 @@ public class KotlinModContainer(
             LOGGER.trace(Logging.LOADING, "Completed Automatic Kotlin event subscribers for ${getModId()}")
         } catch (throwable: Throwable) {
             LOGGER.error(Logging.LOADING, "Failed to register Automatic Kotlin subscribers. ModID: ${getModId()}, class ${modClass.name}", throwable)
-            throw ModLoadingException(modInfo, ModLoadingStage.CONSTRUCT, "fml.modloading.failedtoloadmod", throwable, modClass)
+            throw ModLoadingException(modInfo, "fml.modloading.failedtoloadmod", throwable, modClass)
         }
     }
 }

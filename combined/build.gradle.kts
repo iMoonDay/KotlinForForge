@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm")
-    id("net.neoforged.gradle.userdev") version "[7.0,8.0)"
+    id("net.neoforged.gradle.userdev")
     `maven-publish`
 }
 
@@ -22,7 +22,7 @@ base {
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 
 configurations {
@@ -43,14 +43,14 @@ repositories {
 jarJar.enable()
 
 dependencies {
-    shadow("org.jetbrains.kotlin:kotlin-reflect:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlin:kotlin-stdlib:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlin:kotlin-stdlib-common:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-serialization-core:${serialization_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-serialization-json:${serialization_version}")
+    includeJarJar("org.jetbrains.kotlin:kotlin-reflect", kotlin.coreLibrariesVersion)
+    includeJarJar("org.jetbrains.kotlin:kotlin-stdlib", kotlin.coreLibrariesVersion)
+    includeJarJar("org.jetbrains.kotlin:kotlin-stdlib-common", kotlin.coreLibrariesVersion)
+    includeJarJar("org.jetbrains.kotlinx:kotlinx-coroutines-core", coroutines_version)
+    includeJarJar("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", coroutines_version)
+    includeJarJar("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", coroutines_version)
+    includeJarJar("org.jetbrains.kotlinx:kotlinx-serialization-core", serialization_version)
+    includeJarJar("org.jetbrains.kotlinx:kotlinx-serialization-json", serialization_version)
 
     // KFF Modules
     implementation(include(project(":combined:kfflang"), kffMaxVersion))
@@ -58,10 +58,16 @@ dependencies {
     implementation(include(project(":combined:kffmod"), kffMaxVersion))
 }
 
-fun DependencyHandler.include(dep: ModuleDependency, maxVersion: String? = null): ModuleDependency {
+fun DependencyHandler.includeJarJar(dependency: String, version: String) {
+    jarJar("$dependency:[$version,)") { version { prefer(version) } }
+}
+
+fun DependencyHandler.include(dep: Dependency, maxVersion: String? = null): Dependency {
     api(dep) // Add module metadata compileOnly dependency
     jarJar(dep.copy()) {
-        isTransitive = false
+        if (this is ModuleDependency) {
+            isTransitive = false
+        }
         jarJar.pin(this, version)
         if (maxVersion != null) {
             jarJar.ranged(this, "[$version,$maxVersion)")
@@ -71,35 +77,13 @@ fun DependencyHandler.include(dep: ModuleDependency, maxVersion: String? = null)
 }
 
 tasks {
-    jar {
-        enabled = false
-    }
-
     jarJar.configure {
         from(provider { shadow.map(::zipTree).toTypedArray() })
-        manifest {
-            attributes(
-                "Automatic-Module-Name" to "thedarkcolour.kotlinforforge",
-                "FMLModType" to "LIBRARY"
-            )
-        }
-    }
-
-    whenTaskAdded {
-        // Disable reobfJar
-        if (name == "reobfJar") {
-            enabled = false
-        }
-        // Fight ForgeGradle and Forge crashing when MOD_CLASSES don't exist
-        if (name == "prepareRuns") {
-            doFirst {
-                sourceSets.main.get().output.files.forEach(File::mkdirs)
-            }
-        }
+        manifest.attributes("FMLModType" to "LIBRARY")
     }
 
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
+        kotlinOptions.jvmTarget = "21"
     }
 
     assemble {

@@ -1,12 +1,13 @@
 package thedarkcolour.kotlinforforgetest
 
+import net.minecraft.world.level.block.Block
 import net.neoforged.fml.common.Mod
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
 /**
- * Set `modLoader` in mods.toml to
+ * Set `modLoader` in neoforge.mods.toml to
  * `"kotlinforforge"` and loaderVersion to `"[3,)"`.
  *
  * Make sure to use [MOD_CONTEXT]

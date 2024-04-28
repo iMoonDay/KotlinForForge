@@ -1,10 +1,6 @@
-import java.time.LocalDateTime
-
 plugins {
     java
 }
-
-val kff_version: String by project
 
 tasks {
     jar {
@@ -12,23 +8,16 @@ tasks {
 
         from(provider {
             listOf(
-                zipTree((project(":forge:kfflang").tasks.getByName("jar") as Jar).archiveFile),
+                // todo forge
+                //zipTree((project(":forge:kfflang").tasks.getByName("jar") as Jar).archiveFile),
                 zipTree((project(":neoforge:kfflang").tasks.getByName("jar") as Jar).archiveFile),
             )
         })
 
-        manifest {
-            attributes(
-                "Specification-Title" to "Kotlin for Forge",
-                "Specification-Vendor" to "Forge",
-                "Specification-Version" to "1",
-                "Implementation-Title" to project.name,
-                "Implementation-Version" to project.version,
-                "Implementation-Vendor" to "thedarkcolour",
-                "Implementation-Timestamp" to LocalDateTime.now(),
-                "Automatic-Module-Name" to "thedarkcolour.kotlinforforge.lang",
-                "FMLModType" to "LANGPROVIDER",
-            )
-        }
+        manifest.attributes(
+            "FMLModType" to "LIBRARY",
+            // Required for language providers
+            "Implementation-Version" to version
+        )
     }
 }

@@ -3,8 +3,6 @@ package thedarkcolour.kotlinforforge.neoforge.forge
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.ModLoadingContext
-import net.neoforged.fml.config.IConfigSpec
-import net.neoforged.fml.config.ModConfig
 import net.neoforged.fml.loading.FMLEnvironment
 import net.neoforged.neoforge.common.NeoForge
 import thedarkcolour.kotlinforforge.neoforge.KotlinModLoadingContext
@@ -79,17 +77,6 @@ public inline fun <T> runForDist(clientTarget: () -> T, serverTarget: () -> T): 
     } else {
         serverTarget()
     }
-}
-
-/**
- * Register a config
- */
-public inline fun registerConfig(type: ModConfig.Type, spec: IConfigSpec<*>, fileName: String) {
-    LOADING_CONTEXT.registerConfig(type, spec, fileName)
-}
-
-public inline fun registerConfig(type: ModConfig.Type, spec: IConfigSpec<*>) {
-    LOADING_CONTEXT.registerConfig(type, spec)
 }
 
 /**

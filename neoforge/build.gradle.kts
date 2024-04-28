@@ -1,15 +1,16 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     kotlin("jvm")
-    id("net.neoforged.gradle.userdev") version "[7.0,8.0)"
+    id("net.neoforged.gradle.userdev")
     `maven-publish`
+    java
 }
 
 // Current KFF version
 val kff_version: String by project
 val kffMaxVersion = "${kff_version.split('.')[0].toInt() + 1}.0.0"
 val kffGroup = "thedarkcolour"
+
+java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 
 evaluationDependsOnChildren()
 
@@ -27,9 +28,27 @@ val shadow: Configuration by configurations.creating {
     exclude("org.jetbrains", "annotations")
 }
 
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-    withSourcesJar()
+//java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+
+subprojects {
+    java {
+        withSourcesJar()
+    }
+
+    // Workaround to remove build\classes\java from MOD_CLASSES because SJH doesn't like nonexistent dirs
+    setOf(sourceSets.main, sourceSets.test)
+        .map(Provider<SourceSet>::get)
+        .forEach { sourceSet ->
+            val mutClassesDirs = sourceSet.output.classesDirs as ConfigurableFileCollection
+            val javaClassDir = sourceSet.java.classesDirectory.get()
+            val mutClassesFrom = mutClassesDirs.from
+                .filter {
+                    val toCompare = (it as? Provider<*>)?.get()
+                    return@filter javaClassDir != toCompare
+                }
+                .toMutableSet()
+            mutClassesDirs.setFrom(mutClassesFrom)
+        }
 }
 
 jarJar.enable()
@@ -86,10 +105,6 @@ fun DependencyHandler.include(dep: ModuleDependency, maxVersion: String? = null)
 }
 
 tasks {
-    jar {
-        enabled = false
-    }
-
     jarJar.configure {
         from(provider { shadow.map(::zipTree).toTypedArray() })
         manifest {
@@ -102,6 +117,7 @@ tasks {
 
     whenTaskAdded {
         // Disable reobfJar
+        // todo: did ForgeGradle remove this task as well? If so, we can remove this snippet
         if (name == "reobfJar") {
             enabled = false
         }
@@ -111,10 +127,6 @@ tasks {
                 sourceSets.main.get().output.files.forEach(File::mkdirs)
             }
         }
-    }
-
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
     }
 
     assemble {
