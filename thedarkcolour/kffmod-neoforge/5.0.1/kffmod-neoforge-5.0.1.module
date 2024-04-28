@@ -1,0 +1,198 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "thedarkcolour",
+    "module": "kffmod-neoforge",
+    "version": "5.0.1",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.7"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 21,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk8",
+          "version": {
+            "requires": "1.9.23"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-reflect",
+          "version": {
+            "requires": "1.9.23"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.8.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core-jvm",
+          "version": {
+            "requires": "1.8.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-jdk8",
+          "version": {
+            "requires": "1.8.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-serialization-json",
+          "version": {
+            "requires": "1.6.3"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "kffmod-neoforge-5.0.1.jar",
+          "url": "kffmod-neoforge-5.0.1.jar",
+          "size": 69829,
+          "sha512": "22558d4504d16cf80e5b37686561f15435aff757059f38d31280c54a6cbfc60b674f379c4aa677cb8c2a74e2ce8b7719c4f907b717e8d9bf8aaf31ffe2342406",
+          "sha256": "e7adac31120e1921267a198147f125005c71dd84ca579c0124a33b77be602b1f",
+          "sha1": "61b3ff28ad7088fb0b6ee278490cecad0e167b0b",
+          "md5": "ce15e91b8b13eba73910f1fb7df4a41f"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 21,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "thedarkcolour",
+          "module": "kfflang-neoforge",
+          "version": {
+            "requires": "5.0.1"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "*"
+            }
+          ]
+        },
+        {
+          "group": "thedarkcolour",
+          "module": "kfflib-neoforge",
+          "version": {
+            "requires": "5.0.1"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "*"
+            }
+          ]
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk8",
+          "version": {
+            "requires": "1.9.23"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-reflect",
+          "version": {
+            "requires": "1.9.23"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core",
+          "version": {
+            "requires": "1.8.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-core-jvm",
+          "version": {
+            "requires": "1.8.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-coroutines-jdk8",
+          "version": {
+            "requires": "1.8.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlinx",
+          "module": "kotlinx-serialization-json",
+          "version": {
+            "requires": "1.6.3"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "kffmod-neoforge-5.0.1.jar",
+          "url": "kffmod-neoforge-5.0.1.jar",
+          "size": 69829,
+          "sha512": "22558d4504d16cf80e5b37686561f15435aff757059f38d31280c54a6cbfc60b674f379c4aa677cb8c2a74e2ce8b7719c4f907b717e8d9bf8aaf31ffe2342406",
+          "sha256": "e7adac31120e1921267a198147f125005c71dd84ca579c0124a33b77be602b1f",
+          "sha1": "61b3ff28ad7088fb0b6ee278490cecad0e167b0b",
+          "md5": "ce15e91b8b13eba73910f1fb7df4a41f"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "kffmod-neoforge-5.0.1-sources.jar",
+          "url": "kffmod-neoforge-5.0.1-sources.jar",
+          "size": 69171,
+          "sha512": "9b22675b4ca10584543e97d0344a85573cfc2825e994dbe0c6fdcb2b438e2d3575f6933e355f88f28b0250c911185e274ee4f7bebfcee07e11e79a3e9d709376",
+          "sha256": "d56dcdc9b0adc83c56e7a582a307af0240202bd975a7ba177c4dd9abb965ba8c",
+          "sha1": "b8c06d980b36532a59feba36d6baf9b6abe4814b",
+          "md5": "dc2148f0c54e04a1f756f2edc274124c"
+        }
+      ]
+    }
+  ]
+}
