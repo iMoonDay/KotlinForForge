@@ -65,7 +65,7 @@ public object AutoKotlinEventBusSubscriber {
             val sidesValue = annotationData.annotationData.getOrDefault("value", DIST_ENUM_HOLDERS) as List<ModAnnotation.EnumHolder>
             val sides = EnumSet.noneOf(Dist::class.java).plus(sidesValue.map { eh -> Dist.valueOf(eh.value) })
             val modid = annotationData.annotationData.getOrDefault("modid", mod.modId)
-            val busTargetHolder = annotationData.annotationData.getOrDefault("bus", ModAnnotation.EnumHolder(null, "FORGE")) as ModAnnotation.EnumHolder
+            val busTargetHolder = annotationData.annotationData.getOrDefault("bus", ModAnnotation.EnumHolder(null, "GAME")) as ModAnnotation.EnumHolder
             val busTarget = EventBusSubscriber.Bus.valueOf(busTargetHolder.value)
 
             if (mod.modId == modid && FMLEnvironment.dist in sides) {
