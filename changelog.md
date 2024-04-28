@@ -2,6 +2,7 @@
 - Updated to 1.20.5 NeoForge (Forge hasn't updated yet)
 - Updated to Kotlin 1.9.23, serialization 1.6.3, coroutines 1.8.0
 - Kotlin libraries are now included using JarJar instead of shading
+- Migration guide can be found here: [Migration Guide](https://gist.github.com/thedarkcolour/5590f46b0d4d8ca692add2934d05e642)
 - Check the README on GitHub for updated instructions
 
 ## Kotlin for Forge 4.10.0

@@ -7,6 +7,8 @@ Makes Kotlin Forge-friendly by doing the following:
 - Provides `AutoKotlinEventBusSubscriber` to allow usage of object declarations as @EventBusSubscriber targets.
 - Provides useful utility functions and constants
 
+[MIGRATION GUIDE](https://gist.github.com/thedarkcolour/5590f46b0d4d8ca692add2934d05e642)
+
 A 1.20.5 example mod is provided here: [1.20.5 KotlinModdingSkeleton repository](https://github.com/thedarkcolour/KotlinModdingSkeleton/tree/1.20.5-neoforge)
 
 If you aren't sure where to start, make a fork of the KotlinModdingSkeleton repository (replace BRANCH with your version)
@@ -36,8 +38,8 @@ repositories {
 
 dependencies {
     // Adds KFF as dependency and Kotlin libs (use the variant matching your mod loader)
-    // FORGE
-    implementation 'thedarkcolour:kotlinforforge:5.0.0'
+    // FORGE (NOT IMPLEMENTED FOR 1.20.5)
+    //implementation 'thedarkcolour:kotlinforforge:5.0.0'
     // NEOFORGE
     implementation 'thedarkcolour:kotlinforforge-neoforge:5.0.0'
 }
@@ -65,8 +67,8 @@ repositories {
 
 dependencies {
     // Adds KFF as dependency and Kotlin libs (use the variant matching your mod loader)
-    // FORGE
-    implementation("thedarkcolour:kotlinforforge:5.0.0")
+    // FORGE (NOT IMPLEMENTED FOR 1.20.5)
+    //implementation("thedarkcolour:kotlinforforge:5.0.0")
     // NEOFORGE
     implementation("thedarkcolour:kotlinforforge-neoforge:5.0.0")
 }
