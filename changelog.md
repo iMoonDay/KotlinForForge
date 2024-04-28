@@ -1,3 +1,6 @@
+## Kotlin for Forge 5.0.1
+- Fixed a bug with EventBusSubscriber when the bus field was not specified.
+
 ## Kotlin for Forge 5.0.0
 - Updated to 1.20.5 NeoForge (Forge hasn't updated yet)
 - Updated to Kotlin 1.9.23, serialization 1.6.3, coroutines 1.8.0
