@@ -1,0 +1,76 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "thedarkcolour",
+    "module": "kotlinforforge-neoforge",
+    "version": "5.0.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.7"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 21,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "thedarkcolour",
+          "module": "kfflang-neoforge",
+          "version": {
+            "requires": "5.0.0"
+          }
+        },
+        {
+          "group": "thedarkcolour",
+          "module": "kfflib-neoforge",
+          "version": {
+            "requires": "5.0.0"
+          }
+        },
+        {
+          "group": "thedarkcolour",
+          "module": "kffmod-neoforge",
+          "version": {
+            "requires": "5.0.0"
+          }
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 21,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "files": [
+        {
+          "name": "kotlinforforge-neoforge-5.0.0-all.jar",
+          "url": "kotlinforforge-neoforge-5.0.0-all.jar",
+          "size": 7290496,
+          "sha512": "2e683d00fc18a0067796ab72ddaff28a0a8600df858e38e566c1a2f18fe089d5b85a5e42a74602d9e980f45b0e9787af4a595fd7a81e30a71d3c945bf74545bc",
+          "sha256": "a0b8700d5fcaf98baa5f5989ff3dc38ddd5453bd17efed95cbc6404a4e439460",
+          "sha1": "16f528eba23c0c69c33e557ccc8083fe123c187d",
+          "md5": "84dc564a3b4d46a6d7bfa49793f39c8c"
+        }
+      ]
+    }
+  ]
+}
