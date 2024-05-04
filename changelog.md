@@ -1,3 +1,7 @@
+## Kotlin for Forge 5.0.2
+- Added missing Kotlin libraries to JarJar: kotlin-stdlib-jdk7, kotlin-stdlib-jdk8, kotlin-serialization-core-jvm, kotlin-serialization-json-jvm
+- Changed KFFMod to require KFF 5.0 instead of 4.0 (just a typo fix)
+
 ## Kotlin for Forge 5.0.1
 - Fixed a bug with EventBusSubscriber when the bus field was not specified.
 

@@ -52,7 +52,7 @@ subprojects {
     }
 }
 
-val supportedMcVersions = listOf("1.20.5")
+val supportedMcVersions = listOf("1.20.5", "1.20.6")
 
 curseforge {
     // Use the command line on Linux because IntelliJ doesn't pick up from .bashrc

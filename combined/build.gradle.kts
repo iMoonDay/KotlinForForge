@@ -45,12 +45,12 @@ jarJar.enable()
 dependencies {
     includeJarJar("org.jetbrains.kotlin:kotlin-reflect", kotlin.coreLibrariesVersion)
     includeJarJar("org.jetbrains.kotlin:kotlin-stdlib", kotlin.coreLibrariesVersion)
-    includeJarJar("org.jetbrains.kotlin:kotlin-stdlib-common", kotlin.coreLibrariesVersion)
-    includeJarJar("org.jetbrains.kotlinx:kotlinx-coroutines-core", coroutines_version)
+    includeJarJar("org.jetbrains.kotlin:kotlin-stdlib-jdk7", kotlin.coreLibrariesVersion)
+    includeJarJar("org.jetbrains.kotlin:kotlin-stdlib-jdk8", kotlin.coreLibrariesVersion)
     includeJarJar("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", coroutines_version)
     includeJarJar("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", coroutines_version)
-    includeJarJar("org.jetbrains.kotlinx:kotlinx-serialization-core", serialization_version)
-    includeJarJar("org.jetbrains.kotlinx:kotlinx-serialization-json", serialization_version)
+    includeJarJar("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm", serialization_version)
+    includeJarJar("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm", serialization_version)
 
     // KFF Modules
     implementation(include(project(":combined:kfflang"), kffMaxVersion))
