@@ -1,15 +1,14 @@
 package thedarkcolour.kotlinforforge.neoforge
 
-import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.Bindings
 import net.neoforged.fml.Logging
 import net.neoforged.fml.common.EventBusSubscriber
 import net.neoforged.fml.common.Mod
+import net.neoforged.fml.javafmlmod.AutomaticEventSubscriber
 import net.neoforged.fml.loading.FMLEnvironment
-import net.neoforged.fml.loading.moddiscovery.ModAnnotation
+import net.neoforged.fml.loading.modscan.ModAnnotation
 import net.neoforged.neoforgespi.language.ModFileScanData
 import org.objectweb.asm.Type
-import java.util.*
 
 /**
  * Automatically registers `object` classes to
@@ -33,15 +32,10 @@ import java.util.*
 public object AutoKotlinEventBusSubscriber {
     // EventBusSubscriber annotation
     private val EVENT_BUS_SUBSCRIBER: Type = Type.getType(EventBusSubscriber::class.java)
-
-    /** The default (client & server) list of [Dist] enum holders. */
-    private val DIST_ENUM_HOLDERS = listOf(
-        ModAnnotation.EnumHolder(null, "CLIENT"),
-        ModAnnotation.EnumHolder(null, "DEDICATED_SERVER")
-    )
+    private val MOD: Type = Type.getType(Mod::class.java)
 
     /**
-     * Allows the [Mod.EventBusSubscriber] annotation
+     * Allows the [EventBusSubscriber] annotation
      * to target member functions of an `object` class.
      *
      * You **must** be using an `object` class, or the
@@ -52,24 +46,27 @@ public object AutoKotlinEventBusSubscriber {
      * listeners are registered. Instead, prefer to directly
      * register event listeners to the forge bus or the mod-specific bus.
      */
-    public fun inject(mod: KotlinModContainer, scanData: ModFileScanData?, classLoader: ClassLoader) {
+    public fun inject(mod: KotlinModContainer, scanData: ModFileScanData?, layer: Module) {
         if (scanData == null) return
         LOGGER.debug(Logging.LOADING, "Attempting to inject @EventBusSubscriber kotlin objects in to the event bus for ${mod.modId}")
 
-        val data = scanData.annotations.filter { annotationData ->
+        val ebsTargets = scanData.annotations.filter { annotationData ->
             EVENT_BUS_SUBSCRIBER == annotationData.annotationType
         }
+        val modids = scanData.annotations.filter { annotationData ->
+            MOD == annotationData.annotationType
+        }.associate { annotationData ->
+            annotationData.clazz.className to annotationData.annotationData.get("value")
+        }
 
-        for (annotationData in data) {
-            @Suppress("UNCHECKED_CAST")
-            val sidesValue = annotationData.annotationData.getOrDefault("value", DIST_ENUM_HOLDERS) as List<ModAnnotation.EnumHolder>
-            val sides = EnumSet.noneOf(Dist::class.java).plus(sidesValue.map { eh -> Dist.valueOf(eh.value) })
-            val modid = annotationData.annotationData.getOrDefault("modid", mod.modId)
+        for (annotationData in ebsTargets) {
+            val sides = AutomaticEventSubscriber.getSides(annotationData.annotationData.get("value"))
+            val modid = annotationData.annotationData.getOrDefault("modid", modids.getOrDefault(annotationData.clazz.className, mod.modId))
             val busTargetHolder = annotationData.annotationData.getOrDefault("bus", ModAnnotation.EnumHolder(null, "GAME")) as ModAnnotation.EnumHolder
             val busTarget = EventBusSubscriber.Bus.valueOf(busTargetHolder.value)
 
             if (mod.modId == modid && FMLEnvironment.dist in sides) {
-                val kClass = Class.forName(annotationData.clazz.className, true, classLoader).kotlin
+                val kClass = Class.forName(annotationData.clazz.className, true, layer.classLoader).kotlin
 
                 var ktObject: Any?
 
