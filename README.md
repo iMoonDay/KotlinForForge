@@ -39,9 +39,9 @@ repositories {
 dependencies {
     // Adds KFF as dependency and Kotlin libs (use the variant matching your mod loader)
     // FORGE (NOT IMPLEMENTED FOR 1.20.5)
-    //implementation 'thedarkcolour:kotlinforforge:5.0.1'
+    //implementation 'thedarkcolour:kotlinforforge:5.0.2'
     // NEOFORGE
-    implementation 'thedarkcolour:kotlinforforge-neoforge:5.0.1'
+    implementation 'thedarkcolour:kotlinforforge-neoforge:5.0.2'
 }
 ```
 </details>
@@ -68,9 +68,9 @@ repositories {
 dependencies {
     // Adds KFF as dependency and Kotlin libs (use the variant matching your mod loader)
     // FORGE (NOT IMPLEMENTED FOR 1.20.5)
-    //implementation("thedarkcolour:kotlinforforge:5.0.1")
+    //implementation("thedarkcolour:kotlinforforge:5.0.2")
     // NEOFORGE
-    implementation("thedarkcolour:kotlinforforge-neoforge:5.0.1")
+    implementation("thedarkcolour:kotlinforforge-neoforge:5.0.2")
 }
 ```
 </details>
