@@ -3,7 +3,7 @@
 
 Makes Kotlin Forge-friendly by doing the following:
 - Provides Kotlin stdlib, reflection, JSON serialization, and coroutines libraries.
-- Provides `KotlinLanguageProvider` to allow usage of object declarations as @Mod targets.
+- Provides `KotlinLanguageLoader` to allow usage of object declarations as @Mod targets.
 - Provides `AutoKotlinEventBusSubscriber` to allow usage of object declarations as @EventBusSubscriber targets.
 - Provides useful utility functions and constants
 
@@ -39,9 +39,9 @@ repositories {
 dependencies {
     // Adds KFF as dependency and Kotlin libs (use the variant matching your mod loader)
     // FORGE (NOT IMPLEMENTED FOR 1.20.5)
-    //implementation 'thedarkcolour:kotlinforforge:5.0.2'
+    //implementation 'thedarkcolour:kotlinforforge:5.1.0'
     // NEOFORGE
-    implementation 'thedarkcolour:kotlinforforge-neoforge:5.0.2'
+    implementation 'thedarkcolour:kotlinforforge-neoforge:5.1.0'
 }
 ```
 </details>
@@ -68,9 +68,9 @@ repositories {
 dependencies {
     // Adds KFF as dependency and Kotlin libs (use the variant matching your mod loader)
     // FORGE (NOT IMPLEMENTED FOR 1.20.5)
-    //implementation("thedarkcolour:kotlinforforge:5.0.2")
+    //implementation("thedarkcolour:kotlinforforge:5.1.0")
     // NEOFORGE
-    implementation("thedarkcolour:kotlinforforge-neoforge:5.0.2")
+    implementation("thedarkcolour:kotlinforforge-neoforge:5.1.0")
 }
 ```
 </details>
