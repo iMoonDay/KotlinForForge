@@ -77,8 +77,12 @@ fun DependencyHandler.include(dep: Dependency, maxVersion: String? = null): Depe
 }
 
 tasks {
+    // todo Forge
+    /*
     jarJar.configure {
         manifest.attributes("FMLModType" to "LIBRARY")
+
+        // bypass the finalizeValueOnRead
 
         val patchedArtifacts = ArrayList(jarJarArtifacts.resolvedArtifacts.get())
 
@@ -89,7 +93,7 @@ tasks {
         }
 
         jarJarArtifacts.resolvedArtifacts.set(patchedArtifacts)
-    }
+    }*/
 
     withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "21"
@@ -108,7 +112,7 @@ tasks {
 private fun patchArtifact(oldArtifact: ResolvedJarJarArtifact): ResolvedJarJarArtifact {
     // build/kffJarJarTmp
     val kffJarJarTmpDirectory = project.layout.buildDirectory.asFile.get().toPath().resolve("kffJarJarTmp")
-    if (!kffJarJarTmpDirectory.exists()) kffJarJarTmpDirectory.createDirectory()
+    if (!kffJarJarTmpDirectory.exists()) kffJarJarTmpDirectory.createDirectories()
 
     // the replacement library JAR file
     val patchedLocation = kffJarJarTmpDirectory.resolve(oldArtifact.file.name)
