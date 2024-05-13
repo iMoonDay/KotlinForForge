@@ -79,7 +79,7 @@ Then, change the following to your neoforge.mods.toml file:
 ```toml
 modLoader="kotlinforforge"
 # Change this if you require a certain version of KotlinForForge
-loaderVersion="[5.0,)"
+loaderVersion="[5.1,)"
 ```
 
 Use
