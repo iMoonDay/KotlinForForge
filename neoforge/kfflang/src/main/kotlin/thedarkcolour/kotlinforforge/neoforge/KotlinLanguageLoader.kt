@@ -5,6 +5,7 @@ import net.neoforged.fml.ModLoadingIssue
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.javafmlmod.AutomaticEventSubscriber
 import net.neoforged.fml.loading.FMLLoader
+import net.neoforged.fml.loading.JarVersionLookupHandler
 import net.neoforged.neoforgespi.IIssueReporting
 import net.neoforged.neoforgespi.language.IModInfo
 import net.neoforged.neoforgespi.language.IModLanguageLoader
@@ -16,6 +17,11 @@ import java.lang.annotation.ElementType
 
 public class KotlinLanguageLoader : IModLanguageLoader {
     override fun name(): String = "kotlinforforge"
+
+    // ? to avoid classloading kotlin Intrinsics
+    override fun version(): String? {
+        return JarVersionLookupHandler.getVersion(this.javaClass).orElse("5.1.0")
+    }
 
     override fun loadMod(info: IModInfo, modFileScanResults: ModFileScanData, layer: ModuleLayer): ModContainer {
         // avoid usage of stream
