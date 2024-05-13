@@ -1,7 +1,8 @@
 ## Kotlin for Forge 5.1.0
 - Dropped support for NeoForge 1.20.5 due to breaking changes in 1.20.6.
-- Updated to support NeoForge 20.6.40-beta and onward, following breaking changes in language loaders.
-- Now requires NeoForge 20.6.40-beta or newer.
+- Updated to support NeoForge 20.6.62-beta and onward, following breaking changes in language loaders.
+- Now requires NeoForge 20.6.62-beta or newer.
+- Make sure you update your dependency requirement to require KFF 5.1.x or newer.
 
 ## Kotlin for Forge 5.0.2
 - Added missing Kotlin libraries to JarJar: kotlin-stdlib-jdk7, kotlin-stdlib-jdk8, kotlin-serialization-core-jvm, kotlin-serialization-json-jvm
