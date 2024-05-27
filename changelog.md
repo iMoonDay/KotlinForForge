@@ -1,3 +1,8 @@
+## Kotlin for Forge 5.2.0
+- Updated to Kotlin 2.0.0, coroutines 1.8.1
+- Fixed broken JAR
+- Dev jar now JarJars Kotlin libs instead of shading them
+
 ## Kotlin for Forge 5.1.0
 - Dropped support for NeoForge 1.20.5 due to breaking changes in 1.20.6.
 - Updated to support NeoForge 20.6.62-beta and onward, following breaking changes in language loaders.

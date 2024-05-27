@@ -2,11 +2,14 @@ import net.neoforged.gradle.common.dependency.ResolvedJarJarArtifact
 import org.jetbrains.kotlin.com.google.common.io.Files
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.nio.file.FileSystems
-import kotlin.io.path.*
+import kotlin.io.path.createDirectories
+import kotlin.io.path.exists
+import kotlin.io.path.readText
+import kotlin.io.path.writeText
 
 plugins {
-    kotlin("jvm")
-    id("net.neoforged.gradle.userdev")
+    alias(libs.plugins.kotlinJvm)
+    alias(libs.plugins.neogradle)
     `maven-publish`
 }
 
@@ -43,14 +46,14 @@ repositories {
 jarJar.enable()
 
 dependencies {
-    includeJarJar("org.jetbrains.kotlin:kotlin-reflect", kotlin.coreLibrariesVersion)
-    includeJarJar("org.jetbrains.kotlin:kotlin-stdlib", kotlin.coreLibrariesVersion)
-    includeJarJar("org.jetbrains.kotlin:kotlin-stdlib-jdk7", kotlin.coreLibrariesVersion)
-    includeJarJar("org.jetbrains.kotlin:kotlin-stdlib-jdk8", kotlin.coreLibrariesVersion)
-    includeJarJar("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", coroutines_version)
-    includeJarJar("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", coroutines_version)
-    includeJarJar("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm", serialization_version)
-    includeJarJar("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm", serialization_version)
+    includeJarJar("org.jetbrains.kotlin:kotlin-reflect", libs.versions.kotlin)
+    includeJarJar("org.jetbrains.kotlin:kotlin-stdlib", libs.versions.kotlin)
+    includeJarJar("org.jetbrains.kotlin:kotlin-stdlib-jdk7", libs.versions.kotlin)
+    includeJarJar("org.jetbrains.kotlin:kotlin-stdlib-jdk8", libs.versions.kotlin)
+    includeJarJar("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", libs.versions.coroutines)
+    includeJarJar("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", libs.versions.coroutines)
+    includeJarJar("org.jetbrains.kotlinx:kotlinx-serialization-core-jvm", libs.versions.serialization)
+    includeJarJar("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm", libs.versions.serialization)
 
     // KFF Modules
     implementation(include(project(":combined:kfflang"), kffMaxVersion))
@@ -58,7 +61,10 @@ dependencies {
     implementation(include(project(":combined:kffmod"), kffMaxVersion))
 }
 
-fun DependencyHandler.includeJarJar(dependency: String, version: String) {
+fun DependencyHandler.includeJarJar(dependency: String, version: Provider<String>) {
+    @Suppress("NAME_SHADOWING")
+    val version = version.get()
+
     jarJar("$dependency:[$version,)") { version { prefer(version) } }
 }
 
@@ -77,23 +83,23 @@ fun DependencyHandler.include(dep: Dependency, maxVersion: String? = null): Depe
 }
 
 tasks {
-    // todo Forge
-    /*
     jarJar.configure {
         manifest.attributes("FMLModType" to "LIBRARY")
 
+        // todo Forge
         // bypass the finalizeValueOnRead
 
-        val patchedArtifacts = ArrayList(jarJarArtifacts.resolvedArtifacts.get())
+        /*
+            val patchedArtifacts = ArrayList(jarJarArtifacts.resolvedArtifacts.get())
 
-        patchedArtifacts.forEachIndexed { i, artifact ->
-            if (!artifact.file.path.contains("combined")) {
-                patchedArtifacts[i] = patchArtifact(artifact)
+            patchedArtifacts.forEachIndexed { i, artifact ->
+                if (!artifact.file.path.contains("combined")) {
+                    patchedArtifacts[i] = patchArtifact(artifact)
+                }
             }
-        }
 
-        jarJarArtifacts.resolvedArtifacts.set(patchedArtifacts)
-    }*/
+            jarJarArtifacts.resolvedArtifacts.set(patchedArtifacts)*/
+    }
 
     withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "21"

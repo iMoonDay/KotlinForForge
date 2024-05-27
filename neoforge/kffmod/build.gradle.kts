@@ -1,13 +1,9 @@
 plugins {
-    kotlin("jvm")
-    id("net.neoforged.gradle.userdev")
+    alias(libs.plugins.kotlinJvm)
+    alias(libs.plugins.neogradle)
     `maven-publish`
     idea
 }
-
-val neo_version: String by project
-val coroutines_version: String by project
-val serialization_version: String by project
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 
@@ -22,20 +18,8 @@ runs {
 dependencies {
     implementation("net.neoforged:neoforge:${project.properties["neo_version"]}")
 
-    // Default classpath
-    api(kotlin("stdlib-jdk8"))
-    api(kotlin("reflect"))
-    api("org.jetbrains.kotlinx", "kotlinx-coroutines-core", coroutines_version)
-    api("org.jetbrains.kotlinx", "kotlinx-coroutines-core-jvm", coroutines_version)
-    api("org.jetbrains.kotlinx", "kotlinx-coroutines-jdk8", coroutines_version)
-    api("org.jetbrains.kotlinx", "kotlinx-serialization-json", serialization_version)
-
-    implementation(project(":neoforge:kfflang")) {
-        isTransitive = false
-    }
-    implementation(project(":neoforge:kfflib")) {
-        isTransitive = false
-    }
+    compileOnly(libs.kotlin.stdlib)
+    implementation(projects.neoforge.kfflib)
 }
 
 publishing {

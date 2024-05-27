@@ -1,15 +1,14 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("net.neoforged.gradle.userdev") version "7.0.124"
-    id("com.modrinth.minotaur") version "2.+"
-    id("com.matthewprenger.cursegradle") version "1.4.0"
-    kotlin("jvm")
+    alias(libs.plugins.neogradle)
+    alias(libs.plugins.minotaur)
+    alias(libs.plugins.cursegradle)
+    alias(libs.plugins.kotlinJvm)
 }
 
 // Current KFF version
 val kff_version: String by project
-val kffMaxVersion = "${kff_version.split('.')[0].toInt() + 1}.0.0"
 val kffGroup = "thedarkcolour"
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
@@ -26,7 +25,7 @@ val unsupported_mc_version: String by project
 val min_forge_version: String by project
 val min_neo_version: String by project
 
-val replacements: MutableMap<String, Any> = mutableMapOf(
+val replacements = mutableMapOf(
     "min_mc_version" to min_mc_version,
     "unsupported_mc_version" to unsupported_mc_version,
     "min_forge_version" to min_forge_version,
@@ -52,7 +51,7 @@ subprojects {
     }
 }
 
-val supportedMcVersions = listOf("1.20.5", "1.20.6")
+val supportedMcVersions = listOf("1.20.6")
 
 curseforge {
     // Use the command line on Linux because IntelliJ doesn't pick up from .bashrc
@@ -88,12 +87,12 @@ modrinth {
 }
 
 fun combinedJarTask(): Jar {
-    // todo forge
-    return (project(":neoforge").tasks.getByName("jarJar") as Jar)
+    return (project(":combined").tasks.getByName("jarJar") as Jar)
 }
 
 // maven.repo.local is set within the Julia script in the website branch
 tasks.create("publishAllMavens") {
+    // todo forge
     for (proj in arrayOf(/*":forge", */":neoforge")) {
         finalizedBy(project(proj).tasks.getByName("publishAllMavens"))
     }

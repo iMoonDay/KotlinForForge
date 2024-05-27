@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm")
-    id("net.neoforged.gradle.userdev")
+    alias(libs.plugins.kotlinJvm)
+    alias(libs.plugins.neogradle)
     `maven-publish`
     java
 }
@@ -24,11 +24,7 @@ val neo_version: String by project
 val coroutines_version: String by project
 val serialization_version: String by project
 
-val shadow: Configuration by configurations.creating {
-    exclude("org.jetbrains", "annotations")
-}
-
-//java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 
 subprojects {
     java {
@@ -53,13 +49,13 @@ subprojects {
 
 jarJar.enable()
 
+// Only publish "-all" variant
 configurations {
     apiElements {
         artifacts.clear()
     }
     runtimeElements {
-        setExtendsFrom(emptySet())
-        // Publish the jarJar
+        // Publish the jarJar ONLY
         artifacts.clear()
         outgoing.artifact(tasks.jarJar)
     }
@@ -70,19 +66,20 @@ repositories {
 }
 
 dependencies {
-    shadow("org.jetbrains.kotlin:kotlin-reflect:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlin:kotlin-stdlib:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlin:kotlin-stdlib-common:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-serialization-core:${serialization_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-serialization-json:${serialization_version}")
+    jarJarLib(libs.kotlin.reflect)
+    jarJarLib(libs.kotlin.stdlib.asProvider())
+    jarJarLib(libs.kotlin.stdlib.jdk7)
+    jarJarLib(libs.kotlin.stdlib.jdk8)
+    jarJarLib(libs.kotlinx.coroutines.core.asProvider())
+    jarJarLib(libs.kotlinx.coroutines.core.jvm)
+    jarJarLib(libs.kotlinx.coroutines.jdk8)
+    jarJarLib(libs.kotlinx.serialization.core)
+    jarJarLib(libs.kotlinx.serialization.json)
 
     // KFF Modules
-    implementation(include(project(":neoforge:kfflang"), kffMaxVersion))
-    implementation(include(project(":neoforge:kfflib"), kffMaxVersion))
-    implementation(include(project(":neoforge:kffmod"), kffMaxVersion))
+    api(projects.neoforge.kfflang)
+    api(projects.neoforge.kfflib)
+    api(projects.neoforge.kffmod)
 }
 
 // maven.repo.local is set within the Julia script in the website branch
@@ -92,40 +89,22 @@ tasks.create("publishAllMavens") {
     }
 }
 
-fun DependencyHandler.include(dep: ModuleDependency, maxVersion: String? = null): ModuleDependency {
-    api(dep) // Add module metadata compileOnly dependency
-    jarJar(dep.copy()) {
-        isTransitive = false
-        jarJar.pin(this, version)
-        if (maxVersion != null) {
-            jarJar.ranged(this, "[$version,$maxVersion)")
+fun DependencyHandler.jarJarLib(dependencyNotation: Provider<out ExternalModuleDependency>) {
+    val dep = dependencyNotation.get().copy()
+    jarJar(dep) {
+        version {
+            prefer(dep.version!!)
         }
     }
-    return dep
 }
 
 tasks {
     jarJar.configure {
-        from(provider { shadow.map(::zipTree).toTypedArray() })
         manifest {
             attributes(
                 "Automatic-Module-Name" to "thedarkcolour.kotlinforforge",
                 "FMLModType" to "LIBRARY"
             )
-        }
-    }
-
-    whenTaskAdded {
-        // Disable reobfJar
-        // todo: did ForgeGradle remove this task as well? If so, we can remove this snippet
-        if (name == "reobfJar") {
-            enabled = false
-        }
-        // Fight ForgeGradle and Forge crashing when MOD_CLASSES don't exist
-        if (name == "prepareRuns") {
-            doFirst {
-                sourceSets.main.get().output.files.forEach(File::mkdirs)
-            }
         }
     }
 

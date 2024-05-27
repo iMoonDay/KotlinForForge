@@ -9,7 +9,7 @@ Makes Kotlin Forge-friendly by doing the following:
 
 [MIGRATION GUIDE](https://gist.github.com/thedarkcolour/5590f46b0d4d8ca692add2934d05e642)
 
-A 1.20.5 example mod is provided here: [1.20.5 KotlinModdingSkeleton repository](https://github.com/thedarkcolour/KotlinModdingSkeleton/tree/1.20.5-neoforge)
+A 1.20.6 NeoForge example mod is provided here: [1.20.6 KotlinModdingSkeleton repository](https://github.com/thedarkcolour/KotlinModdingSkeleton/tree/1.20.6-neoforge)
 
 If you aren't sure where to start, make a fork of the KotlinModdingSkeleton repository (replace BRANCH with your version)
 ```git
@@ -23,9 +23,9 @@ To implement in an existing project, merge the following into your build script:
 ```groovy
 plugins {    
     // Adds the Kotlin Gradle plugin
-    id 'org.jetbrains.kotlin.jvm' version '1.9.23'
+    id 'org.jetbrains.kotlin.jvm' version '2.0.0'
     // OPTIONAL Kotlin Serialization plugin
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.9.23'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.0.0'
 }
 
 repositories {
@@ -39,9 +39,9 @@ repositories {
 dependencies {
     // Adds KFF as dependency and Kotlin libs (use the variant matching your mod loader)
     // FORGE (NOT IMPLEMENTED FOR 1.20.5)
-    //implementation 'thedarkcolour:kotlinforforge:5.1.0'
+    //implementation 'thedarkcolour:kotlinforforge:5.2.0'
     // NEOFORGE
-    implementation 'thedarkcolour:kotlinforforge-neoforge:5.1.0'
+    implementation 'thedarkcolour:kotlinforforge-neoforge:5.2.0'
 }
 ```
 </details>
@@ -52,9 +52,9 @@ dependencies {
 ```kotlin
 plugins {
     // Adds the Kotlin Gradle plugin
-    kotlin("jvm") version "1.9.23"
+    kotlin("jvm") version "2.0.0"
     // OPTIONAL Kotlin Serialization plugin
-    kotlin("plugin.serialization") version "1.9.23"
+    kotlin("plugin.serialization") version "2.0.0"
 }
 
 repositories {
@@ -68,9 +68,9 @@ repositories {
 dependencies {
     // Adds KFF as dependency and Kotlin libs (use the variant matching your mod loader)
     // FORGE (NOT IMPLEMENTED FOR 1.20.5)
-    //implementation("thedarkcolour:kotlinforforge:5.1.0")
+    //implementation("thedarkcolour:kotlinforforge:5.2.0")
     // NEOFORGE
-    implementation("thedarkcolour:kotlinforforge-neoforge:5.1.0")
+    implementation("thedarkcolour:kotlinforforge-neoforge:5.2.0")
 }
 ```
 </details>
@@ -79,7 +79,7 @@ Then, change the following to your neoforge.mods.toml file:
 ```toml
 modLoader="kotlinforforge"
 # Change this if you require a certain version of KotlinForForge
-loaderVersion="[5.1,)"
+loaderVersion="[5.2,)"
 ```
 
 Use
