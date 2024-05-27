@@ -1,0 +1,99 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "thedarkcolour",
+    "module": "kotlinforforge-neoforge",
+    "version": "5.2.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.7"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 21,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "thedarkcolour",
+          "module": "kfflang-neoforge",
+          "version": {
+            "requires": "5.2.0"
+          }
+        },
+        {
+          "group": "thedarkcolour",
+          "module": "kfflib-neoforge",
+          "version": {
+            "requires": "5.2.0"
+          }
+        },
+        {
+          "group": "thedarkcolour",
+          "module": "kffmod-neoforge",
+          "version": {
+            "requires": "5.2.0"
+          }
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 21,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "thedarkcolour",
+          "module": "kfflang-neoforge",
+          "version": {
+            "requires": "5.2.0"
+          }
+        },
+        {
+          "group": "thedarkcolour",
+          "module": "kfflib-neoforge",
+          "version": {
+            "requires": "5.2.0"
+          }
+        },
+        {
+          "group": "thedarkcolour",
+          "module": "kffmod-neoforge",
+          "version": {
+            "requires": "5.2.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "kotlinforforge-neoforge-5.2.0-all.jar",
+          "url": "kotlinforforge-neoforge-5.2.0-all.jar",
+          "size": 5700882,
+          "sha512": "b96c8e41759d711c23bb5fda3dc29cc0ff1044d84c734a157cd5b70d63eb94a2e59d3e15c1851e6921b45ee965c1a20e7777c7e71d114f50be09636d6a33569b",
+          "sha256": "59b4f4b1633fd5355b56cd99812c04adba8c40b8503f824ded577d947ebb46f9",
+          "sha1": "a9d08a22f241a3a518dc50df8ce4eeeec41ec05e",
+          "md5": "0608a244d9a3848729ba6b9ec5f4bc45"
+        }
+      ]
+    }
+  ]
+}
