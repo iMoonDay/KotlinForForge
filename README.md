@@ -1,5 +1,5 @@
 # KotlinForForge
-**Instructions for other versions: [1.19.2](https://github.com/thedarkcolour/KotlinForForge/blob/3.x/README.md) | [1.14-1.16.5](https://github.com/thedarkcolour/KotlinForForge/blob/1.x/README.md) | [1.17-1.17.1](https://github.com/thedarkcolour/KotlinForForge/blob/2.x/README.md)**
+**Instructions for other versions: [1.20.6](https://github.com/thedarkcolour/KotlinForForge/blob/5.x/README.md) | [1.19.2](https://github.com/thedarkcolour/KotlinForForge/blob/3.x/README.md) | [1.14-1.16.5](https://github.com/thedarkcolour/KotlinForForge/blob/1.x/README.md) | [1.17-1.17.1](https://github.com/thedarkcolour/KotlinForForge/blob/2.x/README.md)**
 
 Makes Kotlin Forge-friendly by doing the following:
 - Provides Kotlin stdlib, reflection, JSON serialization, and coroutines libraries.
@@ -8,7 +8,8 @@ Makes Kotlin Forge-friendly by doing the following:
 - Provides useful utility functions and constants
 
 A 1.19.3 (works for 1.19.4 too) example mod is provided here: [1.19.3 KotlinModdingSkeleton repository](https://github.com/thedarkcolour/KotlinModdingSkeleton/tree/1.19.3)  
-A 1.20 example mod is provided here: [1.20 KotlinModdingSkeleton repository](https://github.com/thedarkcolour/KotlinModdingSkeleton/tree/1.20)
+A 1.20 example mod is provided here: [1.20 KotlinModdingSkeleton repository](https://github.com/thedarkcolour/KotlinModdingSkeleton/tree/1.20)  
+A 1.20.6 example mod is provided here: [1.20.6 KotlinModdingSkeleton repository](https://github.com/thedarkcolour/KotlinModdingSkeleton/tree/1.20.6-neoforge)
 
 If you aren't sure where to start, make a fork of the KotlinModdingSkeleton repository (replace BRANCH with your version)
 ```git
