@@ -22,14 +22,14 @@ dependencies {
     implementation("net.neoforged:neoforge:${project.properties["neo_version"]}")
 
     // Default classpath
-    api(kotlin("stdlib-jdk8"))
-    api(kotlin("reflect"))
-    api("org.jetbrains.kotlinx", "kotlinx-coroutines-core", coroutines_version)
-    api("org.jetbrains.kotlinx", "kotlinx-coroutines-core-jvm", coroutines_version)
-    api("org.jetbrains.kotlinx", "kotlinx-coroutines-jdk8", coroutines_version)
-    api("org.jetbrains.kotlinx", "kotlinx-serialization-json", serialization_version)
+    api(libs.kotlin.stdlib.jdk8)
+    api(libs.kotlin.reflect)
+    api(libs.kotlinx.coroutines.core)
+    api(libs.kotlinx.coroutines.core.jvm)
+    api(libs.kotlinx.coroutines.jdk8)
+    api(libs.kotlinx.serialization.json)
 
-    implementation(project(":neoforge:kfflang"))
+    implementation(projects.neoforge.kfflang)
 }
 
 tasks {

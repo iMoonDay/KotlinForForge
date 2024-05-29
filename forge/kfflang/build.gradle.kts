@@ -2,11 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.time.LocalDateTime
 
 plugins {
-    kotlin("jvm")
-    id("net.minecraftforge.gradle")
+    id("kff.forge-conventions")
     `maven-publish`
-    eclipse
-    idea
 }
 
 val mc_version: String by project

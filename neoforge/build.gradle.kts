@@ -1,27 +1,15 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm")
-    id("net.neoforged.gradle.userdev") version "[7.0,8.0)"
+    id("kff.neoforge-conventions")
     `maven-publish`
 }
 
 // Current KFF version
 val kff_version: String by project
 val kffMaxVersion = "${kff_version.split('.')[0].toInt() + 1}.0.0"
-val kffGroup = "thedarkcolour"
 
 evaluationDependsOnChildren()
-
-val min_mc_version: String by project
-val unsupported_mc_version: String by project
-val mc_version: String by project
-
-val min_neo_version: String by project
-val neo_version: String by project
-
-val coroutines_version: String by project
-val serialization_version: String by project
 
 val shadow: Configuration by configurations.creating {
     exclude("org.jetbrains", "annotations")
@@ -34,13 +22,14 @@ java {
 
 jarJar.enable()
 
+// Only publish "-all" variant
 configurations {
     apiElements {
         artifacts.clear()
     }
     runtimeElements {
         setExtendsFrom(emptySet())
-        // Publish the jarJar
+        // Publish the jarJar ONLY
         artifacts.clear()
         outgoing.artifact(tasks.jarJar)
     }
@@ -51,19 +40,18 @@ repositories {
 }
 
 dependencies {
-    shadow("org.jetbrains.kotlin:kotlin-reflect:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlin:kotlin-stdlib:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlin:kotlin-stdlib-common:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-serialization-core:${serialization_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-serialization-json:${serialization_version}")
+    shadow(libs.kotlin.reflect)
+    shadow(libs.kotlin.stdlib)
+    shadow(libs.kotlinx.coroutines.core)
+    shadow(libs.kotlinx.coroutines.core.jvm)
+    shadow(libs.kotlinx.coroutines.jdk8)
+    shadow(libs.kotlinx.serialization.core)
+    shadow(libs.kotlinx.serialization.json)
 
     // KFF Modules
-    implementation(include(project(":neoforge:kfflang"), kffMaxVersion))
-    implementation(include(project(":neoforge:kfflib"), kffMaxVersion))
-    implementation(include(project(":neoforge:kffmod"), kffMaxVersion))
+    implementation(include(projects.neoforge.kfflang))
+    implementation(include(projects.neoforge.kfflib))
+    implementation(include(projects.neoforge.kffmod))
 }
 
 // maven.repo.local is set within the Julia script in the website branch
@@ -73,14 +61,12 @@ tasks.create("publishAllMavens") {
     }
 }
 
-fun DependencyHandler.include(dep: ModuleDependency, maxVersion: String? = null): ModuleDependency {
+fun DependencyHandler.include(dep: ModuleDependency): ModuleDependency {
     api(dep) // Add module metadata compileOnly dependency
     jarJar(dep.copy()) {
         isTransitive = false
         jarJar.pin(this, version)
-        if (maxVersion != null) {
-            jarJar.ranged(this, "[$version,$maxVersion)")
-        }
+        jarJar.ranged(this, "[$version,$kffMaxVersion)")
     }
     return dep
 }

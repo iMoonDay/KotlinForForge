@@ -1,44 +1,21 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import thedarkcolour.kotlinforforge.plugin.getPropertyString
+
 plugins {
-    id("net.neoforged.gradle.userdev") version "[7.0,8.0)"
-    id("com.modrinth.minotaur") version "2.+"
-    id("com.matthewprenger.cursegradle") version "1.4.0"
-}
-
-// Current KFF version
-val kff_version: String by project
-val kffMaxVersion = "${kff_version.split('.')[0].toInt() + 1}.0.0"
-val kffGroup = "thedarkcolour"
-
-allprojects {
-    version = kff_version
-    group = kffGroup
+    alias(libs.plugins.minotaur)
+    alias(libs.plugins.cursegradle)
+    alias(libs.plugins.neogradle)
+    id("kff.common-conventions")
 }
 
 evaluationDependsOnChildren()
 
-val min_mc_version: String by project
-val unsupported_mc_version: String by project
-val min_forge_version: String by project
-val min_neo_version: String by project
-
-val replacements: MutableMap<String, Any> = mutableMapOf(
-    "min_mc_version" to min_mc_version,
-    "unsupported_mc_version" to unsupported_mc_version,
-    "min_forge_version" to min_forge_version,
-    "min_neo_version" to min_neo_version,
-    "kff_version" to kff_version
-)
-val targets = mutableListOf("META-INF/mods.toml")
-
 subprojects {
-    apply(plugin = "java")
     tasks {
-        withType<ProcessResources> {
-            inputs.properties(replacements)
-
-            filesMatching(targets) {
-                expand(replacements)
-            }
+        withType<KotlinCompile> {
+            compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
+            compilerOptions.freeCompilerArgs.set(listOf("-Xexplicit-api=warning", "-Xjvm-default=all"))
         }
     }
 }
@@ -85,7 +62,7 @@ tasks.create("publishAllMavens") {
 tasks.create("publishModPlatforms") {
     finalizedBy(tasks.create("printPublishingMessage") {
         this.doFirst {
-            println("Publishing Kotlin for Forge $kff_version to Modrinth and CurseForge")
+            println("Publishing Kotlin for Forge ${getPropertyString("kff_version")} to Modrinth and CurseForge")
         }
     })
     finalizedBy(tasks.modrinth)

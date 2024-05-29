@@ -1,10 +1,8 @@
 import java.time.LocalDateTime
 
 plugins {
-    kotlin("jvm")
-    id("net.minecraftforge.gradle")
+    id("kff.forge-conventions")
     `maven-publish`
-    eclipse
     idea
 }
 
@@ -57,8 +55,6 @@ repositories {
 }
 
 dependencies {
-    minecraft("net.minecraftforge:forge:$mc_version-$forge_version")
-
     // Default classpath
     api(kotlin("stdlib"))
     api(kotlin("stdlib-common"))
@@ -68,22 +64,6 @@ dependencies {
 
     implementation(project(":forge:kfflang"))
     implementation(project(":forge:kfflib"))
-}
-
-tasks {
-    withType<Jar> {
-        manifest {
-            attributes(
-                "Specification-Title" to "Kotlin for Forge",
-                "Specification-Vendor" to "Forge",
-                "Specification-Version" to "1",
-                "Implementation-Title" to project.name,
-                "Implementation-Version" to project.version,
-                "Implementation-Vendor" to "thedarkcolour",
-                "Implementation-Timestamp" to LocalDateTime.now()
-            )
-        }
-    }
 }
 
 publishing {

@@ -1,40 +1,24 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import thedarkcolour.kotlinforforge.plugin.getKffMaxVersion
 
 plugins {
-    kotlin("jvm")
-    id("net.minecraftforge.gradle") version "[6.0,6.2)"
-    id("com.modrinth.minotaur") version "2.+"
+    alias(libs.plugins.forgegradle)
+    id("kff.forge-conventions")
     `maven-publish`
-    id("com.matthewprenger.cursegradle") version "1.4.0"
 }
 
-// Current KFF version
-val kff_version: String by project
-val kffMaxVersion = "${kff_version.split('.')[0].toInt() + 1}.0.0"
-val kffGroup = "thedarkcolour"
-
-allprojects {
-    version = kff_version
-    group = kffGroup
-}
+val kffMaxVersion = getKffMaxVersion()
 
 evaluationDependsOnChildren()
 
 val mc_version: String by project
 val forge_version: String by project
 
-val coroutines_version: String by project
-val serialization_version: String by project
-
 val shadow: Configuration by configurations.creating {
     exclude("org.jetbrains", "annotations")
 }
 
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-    withSourcesJar()
-}
-
+java.withSourcesJar()
 jarJar.enable()
 
 configurations {
@@ -77,16 +61,13 @@ repositories {
 }
 
 dependencies {
-    minecraft("net.minecraftforge:forge:$mc_version-$forge_version")
-
-    shadow("org.jetbrains.kotlin:kotlin-reflect:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlin:kotlin-stdlib:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlin:kotlin-stdlib-common:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-serialization-core:${serialization_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-serialization-json:${serialization_version}")
+    shadow(libs.kotlin.reflect)
+    shadow(libs.kotlin.stdlib)
+    shadow(libs.kotlinx.coroutines.core)
+    shadow(libs.kotlinx.coroutines.core.jvm)
+    shadow(libs.kotlinx.coroutines.jdk8)
+    shadow(libs.kotlinx.serialization.core)
+    shadow(libs.kotlinx.serialization.json)
 
     // KFF Modules
     implementation(include(project(":forge:kfflang"), kffMaxVersion))
@@ -140,10 +121,6 @@ publishing {
         }
     }
 }
-
-fun DependencyHandler.minecraft(
-    dependencyNotation: Any
-): Dependency? = add("minecraft", dependencyNotation)
 
 // maven.repo.local is set within the Julia script in the website branch
 tasks.create("publishAllMavens") {

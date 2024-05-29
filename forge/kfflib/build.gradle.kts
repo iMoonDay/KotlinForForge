@@ -2,18 +2,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.time.LocalDateTime
 
 plugins {
-    kotlin("jvm")
-    kotlin("plugin.serialization")
-    id("net.minecraftforge.gradle")
+    id("kff.forge-conventions")
     `maven-publish`
-    eclipse
-    idea
 }
 
 val mc_version: String by project
 val forge_version: String by project
-val coroutines_version: String by project
-val serialization_version: String by project
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
@@ -104,16 +98,15 @@ configurations {
 }
 
 dependencies {
-    minecraft("net.minecraftforge:forge:$mc_version-$forge_version")
+    // Default classpath
+    api(libs.kotlin.stdlib.jdk8)
+    api(libs.kotlin.reflect)
+    api(libs.kotlinx.coroutines.core)
+    api(libs.kotlinx.coroutines.core.jvm)
+    api(libs.kotlinx.coroutines.jdk8)
+    api(libs.kotlinx.serialization.json)
 
-    api(kotlin("stdlib-jdk8"))
-    api(kotlin("reflect"))
-    api("org.jetbrains.kotlinx", "kotlinx-coroutines-core", coroutines_version)
-    api("org.jetbrains.kotlinx", "kotlinx-coroutines-core-jvm", coroutines_version)
-    api("org.jetbrains.kotlinx", "kotlinx-coroutines-jdk8", coroutines_version)
-    api("org.jetbrains.kotlinx", "kotlinx-serialization-json", serialization_version)
-
-    implementation(project(":forge:kfflang"))
+    implementation(projects.forge.kfflang)
 }
 
 tasks {

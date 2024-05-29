@@ -4,17 +4,10 @@ import org.jetbrains.kotlin.gradle.utils.extendsFrom
 import java.time.LocalDateTime
 
 plugins {
-    kotlin("jvm")
-    id("net.neoforged.gradle.userdev")
-    `maven-publish`
-    eclipse
-    idea
+    id("kff.neoforge-conventions")
 }
 
-val neo_version: String by project
-
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
     withSourcesJar()
 }
 
@@ -27,7 +20,7 @@ val nonmclibs: Configuration by configurations.creating {
 runs {
     configureEach {
         modSource(sourceSets["main"])
-        modSource(sourceSets["test"])
+        //modSource(sourceSets["test"])
         dependencies {
             runtime((nonmclibs))
         }
@@ -39,7 +32,7 @@ runs {
 }
 
 dependencies {
-    implementation("net.neoforged:neoforge:${project.properties["neo_version"]}")
+    implementation(libs.neoforge)
 
     configurations.getByName("api").extendsFrom(nonmclibs)
 

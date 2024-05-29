@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm")
-    id("net.neoforged.gradle.userdev") version "[7.0,8.0)"
+    id("kff.common-conventions")
+    alias(libs.plugins.neogradle)
     `maven-publish`
 }
 
@@ -19,10 +19,6 @@ val shadow: Configuration by configurations.creating {
 
 base {
     archivesName.set("kotlinforforge")
-}
-
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
 
 configurations {
@@ -43,29 +39,26 @@ repositories {
 jarJar.enable()
 
 dependencies {
-    shadow("org.jetbrains.kotlin:kotlin-reflect:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlin:kotlin-stdlib:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlin:kotlin-stdlib-common:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-serialization-core:${serialization_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-serialization-json:${serialization_version}")
+    shadow(libs.kotlin.reflect)
+    shadow(libs.kotlin.stdlib)
+    shadow(libs.kotlinx.coroutines.core)
+    shadow(libs.kotlinx.coroutines.core.jvm)
+    shadow(libs.kotlinx.coroutines.jdk8)
+    shadow(libs.kotlinx.serialization.core)
+    shadow(libs.kotlinx.serialization.json)
 
     // KFF Modules
-    implementation(include(project(":combined:kfflang"), kffMaxVersion))
-    implementation(include(project(":combined:kfflib"), kffMaxVersion))
-    implementation(include(project(":combined:kffmod"), kffMaxVersion))
+    implementation(include(projects.combined.kfflang))
+    implementation(include(projects.combined.kfflib))
+    implementation(include(projects.combined.kffmod))
 }
 
-fun DependencyHandler.include(dep: ModuleDependency, maxVersion: String? = null): ModuleDependency {
+fun DependencyHandler.include(dep: ModuleDependency): ModuleDependency {
     api(dep) // Add module metadata compileOnly dependency
     jarJar(dep.copy()) {
         isTransitive = false
         jarJar.pin(this, version)
-        if (maxVersion != null) {
-            jarJar.ranged(this, "[$version,$maxVersion)")
-        }
+        jarJar.ranged(this, "[$version,$kffMaxVersion)")
     }
     return dep
 }
