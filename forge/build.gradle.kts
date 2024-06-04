@@ -1,24 +1,17 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import thedarkcolour.kotlinforforge.plugin.getKffMaxVersion
+import thedarkcolour.kotlinforforge.plugin.getPropertyString
 
 plugins {
     alias(libs.plugins.forgegradle)
     id("kff.forge-conventions")
-    `maven-publish`
 }
-
-val kffMaxVersion = getKffMaxVersion()
-
-evaluationDependsOnChildren()
-
-val mc_version: String by project
-val forge_version: String by project
 
 val shadow: Configuration by configurations.creating {
     exclude("org.jetbrains", "annotations")
 }
 
-java.withSourcesJar()
 jarJar.enable()
 
 configurations {
@@ -37,7 +30,7 @@ configurations {
 }
 
 extensions.getByType(net.minecraftforge.gradle.userdev.UserDevExtension::class).apply {
-    mappings("official", mc_version)
+    mappings("official", getPropertyString("mc_version"))
 
     runs {
         create("client") {
@@ -70,16 +63,26 @@ dependencies {
     shadow(libs.kotlinx.serialization.json)
 
     // KFF Modules
-    implementation(include(project(":forge:kfflang"), kffMaxVersion))
-    implementation(include(project(":forge:kfflib"), kffMaxVersion))
-    implementation(include(project(":forge:kffmod"), kffMaxVersion))
+    implementation(include(project(":forge:kfflang")))
+    implementation(include(project(":forge:kfflib")))
+    implementation(include(project(":forge:kffmod")))
+}
+
+
+fun DependencyHandler.include(dep: ModuleDependency): ModuleDependency {
+    val version = project.version.toString()
+    val kffMaxVersion = getKffMaxVersion()
+
+    api(dep) // Add module metadata compileOnly dependency
+    jarJar(dep.copy()) {
+        isTransitive = false
+        jarJar.pin(this, version)
+        jarJar.ranged(this, "[$version,$kffMaxVersion)")
+    }
+    return dep
 }
 
 tasks {
-    jar {
-        enabled = false
-    }
-
     jarJar.configure {
         from(provider { shadow.map(::zipTree).toTypedArray() })
         manifest {
@@ -104,7 +107,7 @@ tasks {
     }
 
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
+        compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
     }
 
     assemble {
@@ -124,19 +127,8 @@ publishing {
 
 // maven.repo.local is set within the Julia script in the website branch
 tasks.create("publishAllMavens") {
-    for (proj in arrayOf(":forge", ":forge:kfflib", ":forge:kfflang", ":forge:kffmod")) {
-        finalizedBy(project(proj).tasks.getByName("publishToMavenLocal"))
-    }
-}
-
-fun DependencyHandler.include(dep: ModuleDependency, maxVersion: String? = null): ModuleDependency {
-    api(dep) // Add module metadata compileOnly dependency
-    jarJar(dep.copy()) {
-        isTransitive = false
-        jarJar.pin(this, version)
-        if (maxVersion != null) {
-            jarJar.ranged(this, "[$version,$maxVersion)")
-        }
-    }
-    return dep
+    dependsOn(":forge:publishToMavenLocal")
+    dependsOn(":forge:kfflib:publishToMavenLocal")
+    dependsOn(":forge:kfflang:publishToMavenLocal")
+    dependsOn(":forge:kffmod:publishToMavenLocal")
 }

@@ -10,10 +10,11 @@ fun alias(name: String, project: Project): String {
 }
 
 fun Project.getKffMaxVersion(): String {
-    val kffVersion = getPropertyString("kff_version")
+    val kffVersion = project.version.toString()
+    assert(kffVersion != "unspecified")
     return "${kffVersion.split('.')[0].toInt() + 1}.0.0"
 }
 
 fun Project.getPropertyString(key: String): String {
-    return properties[key] as String
+    return rootProject.properties[key] as String
 }

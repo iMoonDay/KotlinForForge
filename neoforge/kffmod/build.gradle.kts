@@ -1,12 +1,5 @@
-import java.time.LocalDateTime
-
 plugins {
     id("kff.neoforge-conventions")
-    `maven-publish`
-}
-
-java {
-    withSourcesJar()
 }
 
 runs {

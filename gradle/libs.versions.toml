@@ -2,12 +2,11 @@
 kotlin = "2.0.0"
 coroutines = "1.8.1"
 serialization = "1.6.3"
-neogradle = "7.0.137"
+neogradle = "7.0.138"
 neoforge = "20.4.22-beta"
 forgegradle = "6.0.25"
 minotaur = "2.8.7"
 cursegradle = "1.4.0"
-jarjar = "0.4.1"
 
 # https://github.com/JetBrains/kotlin
 # https://github.com/Kotlin/kotlinx.coroutines
@@ -27,7 +26,6 @@ neoforge = { module = "net.neoforged:neoforge", version.ref = "neoforge" }
 [plugins]
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 neogradle = { id = "net.neoforged.gradle.userdev", version.ref = "neogradle" }
-jarjar = { id = "net.neoforged.jarjar", version.ref = "jarjar" }
 forgegradle = { id = "net.minecraftforge.gradle", version.ref = "forgegradle" }
 minotaur = { id = "com.modrinth.minotaur", version.ref = "minotaur" }
 cursegradle = { id = "com.matthewprenger.cursegradle", version.ref = "cursegradle" }

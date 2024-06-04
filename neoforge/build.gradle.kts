@@ -1,23 +1,13 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import thedarkcolour.kotlinforforge.plugin.getKffMaxVersion
 
 plugins {
     id("kff.neoforge-conventions")
-    `maven-publish`
 }
-
-// Current KFF version
-val kff_version: String by project
-val kffMaxVersion = "${kff_version.split('.')[0].toInt() + 1}.0.0"
 
 evaluationDependsOnChildren()
 
 val shadow: Configuration by configurations.creating {
     exclude("org.jetbrains", "annotations")
-}
-
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-    withSourcesJar()
 }
 
 jarJar.enable()
@@ -54,14 +44,10 @@ dependencies {
     implementation(include(projects.neoforge.kffmod))
 }
 
-// maven.repo.local is set within the Julia script in the website branch
-tasks.create("publishAllMavens") {
-    for (proj in arrayOf(":neoforge", ":neoforge:kfflib", ":neoforge:kfflang", ":neoforge:kffmod")) {
-        finalizedBy(project(proj).tasks.getByName("publishToMavenLocal"))
-    }
-}
-
 fun DependencyHandler.include(dep: ModuleDependency): ModuleDependency {
+    val version = project.version.toString()
+    val kffMaxVersion = getKffMaxVersion()
+
     api(dep) // Add module metadata compileOnly dependency
     jarJar(dep.copy()) {
         isTransitive = false
@@ -71,11 +57,15 @@ fun DependencyHandler.include(dep: ModuleDependency): ModuleDependency {
     return dep
 }
 
-tasks {
-    jar {
-        enabled = false
-    }
+// maven.repo.local is set within the Julia script in the website branch
+tasks.create("publishAllMavens") {
+    dependsOn(":neoforge:publishToMavenLocal")
+    dependsOn(":neoforge:kfflib:publishToMavenLocal")
+    dependsOn(":neoforge:kfflang:publishToMavenLocal")
+    dependsOn(":neoforge:kffmod:publishToMavenLocal")
+}
 
+tasks {
     jarJar.configure {
         from(provider { shadow.map(::zipTree).toTypedArray() })
         manifest {
@@ -84,23 +74,6 @@ tasks {
                 "FMLModType" to "LIBRARY"
             )
         }
-    }
-
-    whenTaskAdded {
-        // Disable reobfJar
-        if (name == "reobfJar") {
-            enabled = false
-        }
-        // Fight ForgeGradle and Forge crashing when MOD_CLASSES don't exist
-        if (name == "prepareRuns") {
-            doFirst {
-                sourceSets.main.get().output.files.forEach(File::mkdirs)
-            }
-        }
-    }
-
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
     }
 
     assemble {

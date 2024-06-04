@@ -1,21 +1,7 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.time.LocalDateTime
 
 plugins {
-    kotlin("jvm")
-    id("net.neoforged.gradle.userdev")
-    `maven-publish`
-    eclipse
-    idea
-}
-
-val neo_version: String by project
-val coroutines_version: String by project
-val serialization_version: String by project
-
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-    withSourcesJar()
+    id("kff.neoforge-conventions")
 }
 
 dependencies {
@@ -47,11 +33,6 @@ tasks {
                 "FMLModType" to "GAMELIBRARY",
             )
         }
-    }
-
-    // Only require the lang provider to use explicit visibility modifiers, not the test mod
-    withType<KotlinCompile> {
-        kotlinOptions.freeCompilerArgs = listOf("-Xexplicit-api=warning", "-Xjvm-default=all")
     }
 }
 

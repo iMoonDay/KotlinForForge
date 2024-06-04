@@ -1,22 +1,18 @@
-import org.gradle.api.plugins.JavaPlugin
-import org.gradle.api.plugins.JavaPluginExtension
-import org.gradle.jvm.toolchain.JavaLanguageVersion
-import org.gradle.kotlin.dsl.getByType
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import thedarkcolour.kotlinforforge.plugin.alias
 import thedarkcolour.kotlinforforge.plugin.getPropertyString
 
-project.plugins.apply(JavaPlugin::class.java)
-project.plugins.apply(IdeaPlugin::class.java)
-project.plugins.apply(MavenPublishPlugin::class.java)
+project.plugins.apply(JavaPlugin::class)
+project.plugins.apply(IdeaPlugin::class)
+project.plugins.apply(MavenPublishPlugin::class)
 project.plugins.apply(alias("kotlinJvm", project))
 
-project.extensions.getByType<JavaPluginExtension>().apply {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-}
+val jvmTarget = JvmTarget.JVM_17
 
-// I have no idea what I'm doing
+project.extensions.getByType<JavaPluginExtension>().toolchain.languageVersion.set(JavaLanguageVersion.of(jvmTarget.target))
 
-project.version = project.properties["kff_version"] as String
+project.version = getPropertyString("kff_version")
 project.group = "thedarkcolour"
 
 val replacements: MutableMap<String, Any> = mutableMapOf(
@@ -35,5 +31,9 @@ project.tasks {
         filesMatching(targets) {
             expand(replacements)
         }
+    }
+    withType<KotlinCompile> {
+        compilerOptions.jvmTarget.set(jvmTarget)
+        compilerOptions.freeCompilerArgs.set(listOf("-Xexplicit-api=warning", "-Xjvm-default=all"))
     }
 }

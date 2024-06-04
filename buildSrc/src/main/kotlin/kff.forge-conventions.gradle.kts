@@ -10,6 +10,6 @@ project.dependencies {
     minecraft("net.minecraftforge:forge:$mcVersion-$fgVersion")
 }
 
-fun DependencyHandler.minecraft(
-    dependencyNotation: Any
-): Dependency? = add("minecraft", dependencyNotation)
+project.extensions.getByType<JavaPluginExtension>().withSourcesJar()
+
+fun DependencyHandler.minecraft(dependency: String): Dependency? = add("minecraft", dependency)

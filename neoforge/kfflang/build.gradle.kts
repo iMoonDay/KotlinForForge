@@ -1,21 +1,15 @@
 import net.neoforged.gradle.dsl.common.extensions.RunnableSourceSet
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.gradle.utils.extendsFrom
 import java.time.LocalDateTime
 
 plugins {
     id("kff.neoforge-conventions")
 }
 
-java {
-    withSourcesJar()
-}
-
 // Tells NeoGradle to treat this source set as a separate mod
-sourceSets["test"].extensions.getByType<RunnableSourceSet>().configure { runnable -> runnable.modIdentifier("kfflangtest") }
+sourceSets["test"].extensions.getByType<RunnableSourceSet>().configure { run -> run.modIdentifier("kfflangtest") }
 
-val nonmclibs: Configuration by configurations.creating {
-}
+val nonmclibs: Configuration by configurations.creating {}
 
 runs {
     configureEach {

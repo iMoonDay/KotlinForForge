@@ -1,22 +1,11 @@
-import java.time.LocalDateTime
+import thedarkcolour.kotlinforforge.plugin.getPropertyString
 
 plugins {
     id("kff.forge-conventions")
-    `maven-publish`
-    idea
-}
-
-val mc_version: String by project
-val forge_version: String by project
-val kotlin_version: String by project
-
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-    withSourcesJar()
 }
 
 minecraft {
-    mappings("official", mc_version)
+    mappings("official", getPropertyString("mc_version"))
     copyIdeResources.set(true)
 
     runs {

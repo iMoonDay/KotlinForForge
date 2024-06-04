@@ -13,6 +13,4 @@ dependencies {
     implementation(gradleApi())
     implementation(kotlin("gradle-plugin"))
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:" + libs.versions.kotlin.get())
-    //implementation("net.neoforged:JarJarSelector:" + libs.versions.jarjar.get())
-    //implementation("net.minecraftforge.gradle:ForgeGradle:" + libs.versions.forgegradle.get())
 }
