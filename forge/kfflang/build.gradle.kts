@@ -1,21 +1,11 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.time.LocalDateTime
 
 plugins {
-    kotlin("jvm")
-    id("net.minecraftforge.gradle")
-    `maven-publish`
-    eclipse
-    idea
+    id("kff.forge-conventions")
 }
 
 val mc_version: String by project
 val forge_version: String by project
-
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-    withSourcesJar()
-}
 
 minecraft {
     mappings("official", mc_version)
@@ -98,11 +88,6 @@ tasks {
                 "FMLModType" to "LANGPROVIDER",
             )
         }
-    }
-
-    // Only require the lang provider to use explicit visibility modifiers, not the test mod
-    withType<KotlinCompile> {
-        kotlinOptions.freeCompilerArgs = listOf("-Xexplicit-api=warning", "-Xjvm-default=all")
     }
 }
 

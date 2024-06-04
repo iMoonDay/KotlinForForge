@@ -1,29 +1,16 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import thedarkcolour.kotlinforforge.plugin.getKffMaxVersion
+import thedarkcolour.kotlinforforge.plugin.getPropertyString
 
 plugins {
-    kotlin("jvm")
-    id("net.neoforged.gradle.userdev") version "[7.0,8.0)"
-    `maven-publish`
+    id("kff.common-conventions")
+    alias(libs.plugins.neogradle)
+    alias(libs.plugins.minotaur)
+    alias(libs.plugins.cursegradle)
 }
 
-val kff_version: String by project
-val kffMaxVersion = "${kff_version.split(".")[0].toInt() + 1}.0.0"
-val kffGroup = "thedarkcolour"
+base.archivesName.set("kotlinforforge")
 
-val coroutines_version: String by project
-val serialization_version: String by project
-
-val shadow: Configuration by configurations.creating {
-    exclude("org.jetbrains", "annotations")
-}
-
-base {
-    archivesName.set("kotlinforforge")
-}
-
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-}
+evaluationDependsOnChildren()
 
 configurations {
     apiElements {
@@ -42,39 +29,38 @@ repositories {
 
 jarJar.enable()
 
-dependencies {
-    shadow("org.jetbrains.kotlin:kotlin-reflect:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlin:kotlin-stdlib:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlin:kotlin-stdlib-common:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-serialization-core:${serialization_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-serialization-json:${serialization_version}")
-
-    // KFF Modules
-    implementation(include(project(":combined:kfflang"), kffMaxVersion))
-    implementation(include(project(":combined:kfflib"), kffMaxVersion))
-    implementation(include(project(":combined:kffmod"), kffMaxVersion))
+val shadow: Configuration by configurations.creating {
+    exclude("org.jetbrains", "annotations")
 }
 
-fun DependencyHandler.include(dep: ModuleDependency, maxVersion: String? = null): ModuleDependency {
-    api(dep) // Add module metadata compileOnly dependency
+dependencies {
+    shadow(libs.kotlin.reflect)
+    shadow(libs.kotlin.stdlib)
+    shadow(libs.kotlinx.coroutines.core)
+    shadow(libs.kotlinx.coroutines.core.jvm)
+    shadow(libs.kotlinx.coroutines.jdk8)
+    shadow(libs.kotlinx.serialization.core)
+    shadow(libs.kotlinx.serialization.json)
+
+    // KFF Modules
+    include(projects.combined.kfflang)
+    include(projects.combined.kfflib)
+    include(projects.combined.kffmod)
+}
+
+fun DependencyHandler.include(dep: ModuleDependency) {
+    val version = project.version.toString()
+    val kffMaxVersion = getKffMaxVersion()
+    api(dep)
+
     jarJar(dep.copy()) {
         isTransitive = false
         jarJar.pin(this, version)
-        if (maxVersion != null) {
-            jarJar.ranged(this, "[$version,$maxVersion)")
-        }
+        jarJar.ranged(this, "[$version,$kffMaxVersion)")
     }
-    return dep
 }
 
 tasks {
-    jar {
-        enabled = false
-    }
-
     jarJar.configure {
         from(provider { shadow.map(::zipTree).toTypedArray() })
         manifest {
@@ -85,27 +71,59 @@ tasks {
         }
     }
 
-    whenTaskAdded {
-        // Disable reobfJar
-        if (name == "reobfJar") {
-            enabled = false
-        }
-        // Fight ForgeGradle and Forge crashing when MOD_CLASSES don't exist
-        if (name == "prepareRuns") {
-            doFirst {
-                sourceSets.main.get().output.files.forEach(File::mkdirs)
-            }
-        }
-    }
-
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
-    }
-
     assemble {
         dependsOn(":combined:kfflang:build")
         dependsOn(":combined:kfflib:build")
         dependsOn(":combined:kffmod:build")
         dependsOn(jarJar)
     }
+}
+
+
+val supportedMcVersions = listOf("1.19.3", "1.19.4", "1.20", "1.20.1", "1.20.2")
+
+curseforge {
+    // Use the command line on Linux because IntelliJ doesn't pick up from .bashrc
+    apiKey = System.getenv("CURSEFORGE_API_KEY") ?: "no-publishing-allowed"
+
+    project(closureOf<com.matthewprenger.cursegradle.CurseProject> {
+        id = "351264"
+        releaseType = "release"
+        gameVersionStrings.add("Forge")
+        gameVersionStrings.add("NeoForge")
+        gameVersionStrings.add("Java 17")
+        gameVersionStrings.addAll(supportedMcVersions)
+
+        // from Modrinth's Util.resolveFile
+        mainArtifact(
+            project(":combined").tasks.jarJar.get().archiveFile,
+            closureOf<com.matthewprenger.cursegradle.CurseArtifact> {
+                displayName = "Kotlin for Forge ${project.version}"
+            })
+    })
+}
+
+modrinth {
+    projectId.set("ordsPcFz")
+    versionName.set("Kotlin for Forge ${project.version}")
+    versionNumber.set("${project.version}")
+    versionType.set("release")
+    gameVersions.addAll(supportedMcVersions)
+    loaders.add("forge")
+    loaders.add("neoforge")
+    uploadFile.provider(project(":combined").tasks.jarJar)
+}
+tasks.create("publishModPlatforms") {
+    finalizedBy(tasks.create("printPublishingMessage") {
+        doFirst {
+            println("Publishing Kotlin for Forge ${getPropertyString("kff_version")} to Modrinth and CurseForge")
+        }
+    })
+    finalizedBy(tasks.modrinth)
+    finalizedBy(tasks.curseforge)
+}
+
+// Kotlin function ambiguity fix
+fun <T> Property<T>.provider(value: T) {
+    set(value)
 }

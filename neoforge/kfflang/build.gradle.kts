@@ -1,33 +1,20 @@
 import net.neoforged.gradle.dsl.common.extensions.RunnableSourceSet
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.gradle.utils.extendsFrom
 import java.time.LocalDateTime
 
 plugins {
-    kotlin("jvm")
-    id("net.neoforged.gradle.userdev")
-    `maven-publish`
-    eclipse
-    idea
-}
-
-val neo_version: String by project
-
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-    withSourcesJar()
+    id("kff.neoforge-conventions")
 }
 
 // Tells NeoGradle to treat this source set as a separate mod
-sourceSets["test"].extensions.getByType<RunnableSourceSet>().configure { runnable -> runnable.modIdentifier("kfflangtest") }
+sourceSets["test"].extensions.getByType<RunnableSourceSet>().configure { run -> run.modIdentifier("kfflangtest") }
 
-val nonmclibs: Configuration by configurations.creating {
-}
+val nonmclibs: Configuration by configurations.creating {}
 
 runs {
     configureEach {
         modSource(sourceSets["main"])
-        modSource(sourceSets["test"])
+        //modSource(sourceSets["test"])
         dependencies {
             runtime((nonmclibs))
         }
@@ -39,7 +26,7 @@ runs {
 }
 
 dependencies {
-    implementation("net.neoforged:neoforge:${project.properties["neo_version"]}")
+    implementation(libs.neoforge)
 
     configurations.getByName("api").extendsFrom(nonmclibs)
 

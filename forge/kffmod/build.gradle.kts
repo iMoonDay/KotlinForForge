@@ -1,24 +1,11 @@
-import java.time.LocalDateTime
+import thedarkcolour.kotlinforforge.plugin.getPropertyString
 
 plugins {
-    kotlin("jvm")
-    id("net.minecraftforge.gradle")
-    `maven-publish`
-    eclipse
-    idea
-}
-
-val mc_version: String by project
-val forge_version: String by project
-val kotlin_version: String by project
-
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-    withSourcesJar()
+    id("kff.forge-conventions")
 }
 
 minecraft {
-    mappings("official", mc_version)
+    mappings("official", getPropertyString("mc_version"))
     copyIdeResources.set(true)
 
     runs {
@@ -57,8 +44,6 @@ repositories {
 }
 
 dependencies {
-    minecraft("net.minecraftforge:forge:$mc_version-$forge_version")
-
     // Default classpath
     api(kotlin("stdlib"))
     api(kotlin("stdlib-common"))
@@ -68,22 +53,6 @@ dependencies {
 
     implementation(project(":forge:kfflang"))
     implementation(project(":forge:kfflib"))
-}
-
-tasks {
-    withType<Jar> {
-        manifest {
-            attributes(
-                "Specification-Title" to "Kotlin for Forge",
-                "Specification-Vendor" to "Forge",
-                "Specification-Version" to "1",
-                "Implementation-Title" to project.name,
-                "Implementation-Version" to project.version,
-                "Implementation-Vendor" to "thedarkcolour",
-                "Implementation-Timestamp" to LocalDateTime.now()
-            )
-        }
-    }
 }
 
 publishing {

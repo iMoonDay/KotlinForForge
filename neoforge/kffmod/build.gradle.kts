@@ -1,21 +1,5 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.time.LocalDateTime
-
 plugins {
-    kotlin("jvm")
-    id("net.neoforged.gradle.userdev")
-    `maven-publish`
-    eclipse
-    idea
-}
-
-val neo_version: String by project
-val coroutines_version: String by project
-val serialization_version: String by project
-
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-    withSourcesJar()
+    id("kff.neoforge-conventions")
 }
 
 runs {
@@ -27,43 +11,21 @@ runs {
 }
 
 dependencies {
-    implementation("net.neoforged:neoforge:${project.properties["neo_version"]}")
+    implementation(libs.neoforge)
 
     // Default classpath
-    api(kotlin("stdlib-jdk8"))
-    api(kotlin("reflect"))
-    api("org.jetbrains.kotlinx", "kotlinx-coroutines-core", coroutines_version)
-    api("org.jetbrains.kotlinx", "kotlinx-coroutines-core-jvm", coroutines_version)
-    api("org.jetbrains.kotlinx", "kotlinx-coroutines-jdk8", coroutines_version)
-    api("org.jetbrains.kotlinx", "kotlinx-serialization-json", serialization_version)
+    api(libs.kotlin.stdlib.jdk8)
+    api(libs.kotlin.reflect)
+    api(libs.kotlinx.coroutines.core)
+    api(libs.kotlinx.coroutines.core.jvm)
+    api(libs.kotlinx.coroutines.jdk8)
+    api(libs.kotlinx.serialization.json)
 
-    implementation(project(":neoforge:kfflang")) {
+    implementation(projects.neoforge.kfflang) {
         isTransitive = false
     }
-    implementation(project(":neoforge:kfflib")) {
+    implementation(projects.neoforge.kfflib) {
         isTransitive = false
-    }
-}
-
-tasks {
-    withType<Jar> {
-        manifest {
-            attributes(
-                "Specification-Title" to "Kotlin for Forge",
-                "Specification-Vendor" to "Forge",
-                "Specification-Version" to "1",
-                "Implementation-Title" to project.name,
-                "Implementation-Version" to project.version,
-                "Implementation-Vendor" to "thedarkcolour",
-                "Implementation-Timestamp" to LocalDateTime.now(),
-                "Automatic-Module-Name" to "thedarkcolour.kotlinforforge.lang"
-            )
-        }
-    }
-
-    // Only require the lang provider to use explicit visibility modifiers, not the test mod
-    withType<KotlinCompile> {
-        kotlinOptions.freeCompilerArgs = listOf("-Xexplicit-api=warning", "-Xjvm-default=all")
     }
 }
 
