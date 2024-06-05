@@ -1,0 +1,158 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "thedarkcolour",
+    "module": "kfflang-neoforge",
+    "version": "4.11.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.7"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.0.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-common",
+          "version": {
+            "requires": "2.0.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk8",
+          "version": {
+            "requires": "2.0.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk7",
+          "version": {
+            "requires": "2.0.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-reflect",
+          "version": {
+            "requires": "2.0.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "kfflang-neoforge-4.11.0.jar",
+          "url": "kfflang-neoforge-4.11.0.jar",
+          "size": 21759,
+          "sha512": "a233fa3ae5ff684fe1de2fd89b6c922668a7175213c21f7eed0d238a7b5eca1d47bafc5b76e9dcd9f4415d96c230592336ddf4579b13d901486815595595bd56",
+          "sha256": "171b40f35446fff82cceebb170da766b82839af0c1e232af127d3106046c714a",
+          "sha1": "6c768a99782b83c5822fa4e39837856dea0246e9",
+          "md5": "93d4d4972f34b3857c51b6f7e15c5ed2"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.0.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-common",
+          "version": {
+            "requires": "2.0.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk8",
+          "version": {
+            "requires": "2.0.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk7",
+          "version": {
+            "requires": "2.0.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-reflect",
+          "version": {
+            "requires": "2.0.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "kfflang-neoforge-4.11.0.jar",
+          "url": "kfflang-neoforge-4.11.0.jar",
+          "size": 21759,
+          "sha512": "a233fa3ae5ff684fe1de2fd89b6c922668a7175213c21f7eed0d238a7b5eca1d47bafc5b76e9dcd9f4415d96c230592336ddf4579b13d901486815595595bd56",
+          "sha256": "171b40f35446fff82cceebb170da766b82839af0c1e232af127d3106046c714a",
+          "sha1": "6c768a99782b83c5822fa4e39837856dea0246e9",
+          "md5": "93d4d4972f34b3857c51b6f7e15c5ed2"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "kfflang-neoforge-4.11.0-sources.jar",
+          "url": "kfflang-neoforge-4.11.0-sources.jar",
+          "size": 7090,
+          "sha512": "c6a7b4cc8baeeb815eb4d1fa5a2641bebd852eba436813d8ccad7e3b412acb74f3d3d62697d1249941f053ed580d2dc53c66b91d8ca80ce0aedd7009a6797837",
+          "sha256": "e51b70f7757d1dc8066c8fa4b0d5efee2c1c5205644cdaa45c50b5d9e6ae0c39",
+          "sha1": "cdb51809d8cd5d58a5437ad0752d0137ab1e18af",
+          "md5": "7bb1f555ad0904e27ac3f93852a689c2"
+        }
+      ]
+    }
+  ]
+}
