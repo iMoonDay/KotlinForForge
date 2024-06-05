@@ -1,5 +1,5 @@
 ## Kotlin for Forge 4.11.0
-- Update to Kotlin 2.0.0, coroutines 1.6.3
+- Update to Kotlin 2.0.0, serialization 1.6.3, coroutines 1.8.1
 
 ## Kotlin for Forge 4.10.0
 - Update to Kotlin 1.9.22
@@ -10,7 +10,7 @@
 - Fixed a crash with new Forge changes. KFF 4.x is still compatible with Forge 1.19.3-1.20.4 and NeoForge 1.20.1-1.20.4.
 
 ## Kotlin for Forge 4.8.0
-- Update to Kotlin 1.9.21, coroutines 1.6.2
+- Update to Kotlin 1.9.21, serialization 1.6.2
 - Fixed a crash with new NeoForge changes
 
 ## Kotlin for Forge 4.7.0
