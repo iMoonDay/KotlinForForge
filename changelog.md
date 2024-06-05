@@ -1,3 +1,6 @@
+## Kotlin for Forge 4.11.0
+- Update to Kotlin 2.0.0, coroutines 1.6.3
+
 ## Kotlin for Forge 4.10.0
 - Update to Kotlin 1.9.22
 - Address changes in NeoForge FancyModLoader (added type field to the mods.toml dependencies)
