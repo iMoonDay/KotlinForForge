@@ -6,15 +6,22 @@ plugins {
 }
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+java.withSourcesJar()
 
 dependencies {
-    implementation("net.neoforged:neoforge:${project.properties["neo_version"]}")
+    implementation(libs.neoforge)
 
-    implementation(project(":neoforge:kfflang"))
+    implementation(projects.neoforge.kfflang)
 }
 
 tasks.withType<Jar> {
     manifest.attributes("FMLModType" to "GAMELIBRARY")
+}
+
+configurations {
+    runtimeElements {
+        setExtendsFrom(emptySet())
+    }
 }
 
 publishing {

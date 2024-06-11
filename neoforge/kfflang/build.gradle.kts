@@ -1,46 +1,25 @@
-import net.neoforged.gradle.dsl.common.extensions.RunnableSourceSet
-
 plugins {
     alias(libs.plugins.kotlinJvm)
-    alias(libs.plugins.neogradle)
     `maven-publish`
-    idea
-    java
 }
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+java.withSourcesJar()
 
-// Tells NeoGradle to treat this source set as a separate mod
-sourceSets["test"].extensions.getByType<RunnableSourceSet>().configure { runnable -> runnable.modIdentifier("kfflangtest") }
-
-val nonMcLibs: Configuration by configurations.creating {
-    exclude(module = "annotations")
-}
-
-runs {
-    configureEach {
-        modSource(sourceSets["main"])
-        modSource(sourceSets["test"])
-        dependencies {
-            runtime(nonMcLibs)
-        }
-    }
-    create("client")
-    create("server") {
-        programArgument("--nogui")
-    }
+repositories {
+    maven("https://maven.neoforged.net/releases")
+    // use mojang libraries without NeoGradle
+    maven("https://repo.minebench.de/")
 }
 
 dependencies {
-    implementation("net.neoforged:neoforge:${project.properties["neo_version"]}")
-
-    configurations.getByName("api").extendsFrom(nonMcLibs)
+    implementation(libs.fancymodloader)
 
     // Default classpath
-    nonMcLibs(libs.kotlin.stdlib)
-    nonMcLibs(libs.kotlin.stdlib.jdk7)
-    nonMcLibs(libs.kotlin.stdlib.jdk8)
-    nonMcLibs(libs.kotlin.reflect)
+    api(libs.kotlin.stdlib)
+    api(libs.kotlin.stdlib.jdk7)
+    api(libs.kotlin.stdlib.jdk8)
+    api(libs.kotlin.reflect)
 }
 
 tasks.withType<Jar> {

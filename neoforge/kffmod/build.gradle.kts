@@ -1,22 +1,20 @@
 plugins {
     alias(libs.plugins.kotlinJvm)
-    alias(libs.plugins.neogradle)
     `maven-publish`
     idea
 }
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+java.withSourcesJar()
 
-runs {
-    create("client") {
-        modSource(sourceSets["main"])
-        modSource(project(":neoforge:kfflang").sourceSets["main"])
-        modSource(project(":neoforge:kfflib").sourceSets["main"])
-    }
+repositories {
+    maven("https://maven.neoforged.net/releases")
+    // use mojang libraries without NeoGradle
+    maven("https://repo.minebench.de/")
 }
 
 dependencies {
-    implementation("net.neoforged:neoforge:${project.properties["neo_version"]}")
+    implementation(libs.fancymodloader)
 
     compileOnly(libs.kotlin.stdlib)
     implementation(projects.neoforge.kfflib)

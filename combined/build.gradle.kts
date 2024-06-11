@@ -17,9 +17,6 @@ val kff_version: String by project
 val kffMaxVersion = "${kff_version.split(".")[0].toInt() + 1}.0.0"
 val kffGroup = "thedarkcolour"
 
-val coroutines_version: String by project
-val serialization_version: String by project
-
 base {
     archivesName.set("kotlinforforge")
 }
@@ -85,20 +82,6 @@ fun DependencyHandler.include(dep: Dependency, maxVersion: String? = null): Depe
 tasks {
     jarJar.configure {
         manifest.attributes("FMLModType" to "LIBRARY")
-
-        // todo Forge
-        // bypass the finalizeValueOnRead
-
-        /*
-            val patchedArtifacts = ArrayList(jarJarArtifacts.resolvedArtifacts.get())
-
-            patchedArtifacts.forEachIndexed { i, artifact ->
-                if (!artifact.file.path.contains("combined")) {
-                    patchedArtifacts[i] = patchArtifact(artifact)
-                }
-            }
-
-            jarJarArtifacts.resolvedArtifacts.set(patchedArtifacts)*/
     }
 
     withType<KotlinCompile> {
