@@ -1,0 +1,76 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "thedarkcolour",
+    "module": "kotlinforforge",
+    "version": "5.3.0e",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.7"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 21,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "thedarkcolour",
+          "module": "kfflang",
+          "version": {
+            "requires": "5.3.0e"
+          }
+        },
+        {
+          "group": "thedarkcolour",
+          "module": "kfflib",
+          "version": {
+            "requires": "5.3.0e"
+          }
+        },
+        {
+          "group": "thedarkcolour",
+          "module": "kffmod",
+          "version": {
+            "requires": "5.3.0e"
+          }
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 21,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "files": [
+        {
+          "name": "kotlinforforge-5.3.0e-all.jar",
+          "url": "kotlinforforge-5.3.0e-all.jar",
+          "size": 6303349,
+          "sha512": "05bea7b2853e529fea1a355a6e5c6d79757c415d5e90fd4dbd947a61d3b36d0c5ce5cdd95f38f9c098a7bb3f45282b52bb2642b8e0b6565f66036a01456649f6",
+          "sha256": "06776bd0b6a1885e0968b9f910ca297e14bdcda87f451ab1e3e63f879f185e40",
+          "sha1": "c2ca8aa380c04fdfb405dc1aa0a2d3a9682d65f7",
+          "md5": "e6d575f0e4009871ab52675dfdf31b0f"
+        }
+      ]
+    }
+  ]
+}

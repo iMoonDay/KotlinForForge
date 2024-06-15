@@ -1,0 +1,138 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "thedarkcolour",
+    "module": "kfflang",
+    "version": "5.3.0e",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.7"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 21,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.0.0"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "annotations"
+            }
+          ]
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk7",
+          "version": {
+            "requires": "2.0.0"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "annotations"
+            }
+          ]
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk8",
+          "version": {
+            "requires": "2.0.0"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "annotations"
+            }
+          ]
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-reflect",
+          "version": {
+            "requires": "2.0.0"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "annotations"
+            }
+          ]
+        }
+      ],
+      "files": [
+        {
+          "name": "kfflang-5.3.0e.jar",
+          "url": "kfflang-5.3.0e.jar",
+          "size": 23498,
+          "sha512": "2f2e002fd682dd4c6ed07f98b6b47a8a43625eb584ab4b803ee5919e1fe3ab81a07c2c032226165d152f09f275004a30ae5f3896a1834a77b1758f5ec5892fba",
+          "sha256": "e082a782c3e4f6743db6eb1aafdd75b165a8c539dfeb2534570f21dd8ad540cf",
+          "sha1": "0f78e1d39b204415fc10affa2d4de0f0b21c1565",
+          "md5": "0c3c9bd58df0eaf4cfdd807198c8e029"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 21,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "files": [
+        {
+          "name": "kfflang-5.3.0e.jar",
+          "url": "kfflang-5.3.0e.jar",
+          "size": 23498,
+          "sha512": "2f2e002fd682dd4c6ed07f98b6b47a8a43625eb584ab4b803ee5919e1fe3ab81a07c2c032226165d152f09f275004a30ae5f3896a1834a77b1758f5ec5892fba",
+          "sha256": "e082a782c3e4f6743db6eb1aafdd75b165a8c539dfeb2534570f21dd8ad540cf",
+          "sha1": "0f78e1d39b204415fc10affa2d4de0f0b21c1565",
+          "md5": "0c3c9bd58df0eaf4cfdd807198c8e029"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "kfflang-5.3.0e-sources.jar",
+          "url": "kfflang-5.3.0e-sources.jar",
+          "size": 7441,
+          "sha512": "1d30144f1e43dcc5940a18044674f70f2289f59559beb2c4d9edf5e589cf44e14da0aa1f2d3088028ddda3b603b25d17168eb3f6165d916f9fadc42596842a11",
+          "sha256": "b21eb5465326e20b6e16bd7654a47aef388eb54599cb6e1f4e2703a103cd5ef8",
+          "sha1": "839fd83f151aa0bbcefcf758a612c2fa50c480cb",
+          "md5": "6b62682bb491d90f7f917cf2743b70a5"
+        }
+      ]
+    }
+  ]
+}

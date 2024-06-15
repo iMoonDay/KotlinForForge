@@ -26,8 +26,8 @@ end
 
 # Compiles KFF and publishes it to local Maven within this folder
 publish_special_maven() = run(`gradlew.bat -Dmaven.repo.local=$original_pwd publishAllMavens`)
-# Executes the Gradle task when KotlinForForge project folder is in same folder as this website folder
-cd(publish_special_maven, "../KotlinForForge")
+# Executes the Gradle task when specified project folder is in same folder as this website folder
+cd(publish_special_maven, "../" * ARGS[1])
 
 for (root, dir, files) in walkdir("thedarkcolour")
   for file_name in files
