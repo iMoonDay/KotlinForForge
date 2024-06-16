@@ -30,6 +30,7 @@ public class KotlinModContainer(
     internal val eventBus: IEventBus
     private val modClasses: List<Class<*>>
     private val layer: Module
+    internal val context: KotlinModLoadingContext
 
     init {
         LOGGER.debug(Logging.LOADING, "Creating KotlinModContainer instance for {}", entrypoints)
@@ -41,9 +42,15 @@ public class KotlinModContainer(
             .build()
         this.layer = gameLayer.findModule(info.owningFile.moduleName()).orElseThrow()
 
-        val ctx = KotlinModLoadingContext(this)
-        contextExtension = Supplier { ctx }
-        modClasses = ArrayList(entrypoints.size)
+        this.context = KotlinModLoadingContext(this)
+        // Backwards compatibility with FancyModLoader 3.x
+        try {
+            val contextExtensionField = ModContainer::class.java.getDeclaredField("contextExtension")
+            val legacyExtension = Supplier { context }
+            contextExtensionField.set(this, legacyExtension)
+        } catch (ignored: NoSuchFieldException) {}
+
+        this.modClasses = ArrayList(entrypoints.size)
 
         for (entrypoint in entrypoints) {
             try {

@@ -1,9 +1,8 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.neogradle)
-    alias(libs.plugins.minotaur)
-    alias(libs.plugins.cursegradle)
     alias(libs.plugins.kotlinJvm)
 }
 
@@ -18,19 +17,15 @@ allprojects {
     group = kffGroup
 }
 
-evaluationDependsOnChildren()
-
 val min_mc_version: String by project
 val unsupported_mc_version: String by project
-val min_forge_version: String by project
-val min_neo_version: String by project
+val kff_max_version: String by project
 
 val replacements = mutableMapOf(
     "min_mc_version" to min_mc_version,
     "unsupported_mc_version" to unsupported_mc_version,
-    "min_forge_version" to min_forge_version,
-    "min_neo_version" to min_neo_version,
-    "kff_version" to kff_version
+    "kff_version" to kff_version,
+    "kff_max_version" to kff_max_version,
 )
 val targets = mutableListOf("META-INF/mods.toml", "META-INF/neoforge.mods.toml")
 
@@ -45,66 +40,16 @@ subprojects {
         }
 
         withType<KotlinCompile> {
-            kotlinOptions.jvmTarget = "21"
-            kotlinOptions.freeCompilerArgs = listOf("-Xexplicit-api=warning", "-Xjvm-default=all")
+            compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
+            compilerOptions.freeCompilerArgs.set(listOf("-Xexplicit-api=warning", "-Xjvm-default=all"))
         }
     }
-}
-
-val supportedMcVersions = listOf("1.20.6")
-
-curseforge {
-    // Use the command line on Linux because IntelliJ doesn't pick up from .bashrc
-    apiKey = System.getenv("CURSEFORGE_API_KEY") ?: "no-publishing-allowed"
-
-    project(closureOf<com.matthewprenger.cursegradle.CurseProject> {
-        id = "351264"
-        releaseType = "release"
-        // todo forge
-        //gameVersionStrings.add("Forge")
-        gameVersionStrings.add("NeoForge")
-        gameVersionStrings.add("Java 21")
-        gameVersionStrings.addAll(supportedMcVersions)
-
-        // from Modrinth's Util.resolveFile
-        @Suppress("DEPRECATION")
-        mainArtifact(combinedJarTask().archivePath, closureOf<com.matthewprenger.cursegradle.CurseArtifact> {
-            displayName = "Kotlin for Forge ${project.version}"
-        })
-    })
-}
-
-modrinth {
-    projectId.set("ordsPcFz")
-    versionName.set("Kotlin for Forge ${project.version}")
-    versionNumber.set("${project.version}")
-    versionType.set("release")
-    gameVersions.addAll(supportedMcVersions)
-    // todo forge
-    //loaders.add("forge")
-    loaders.add("neoforge")
-    uploadFile.provider(combinedJarTask())
-}
-
-fun combinedJarTask(): Jar {
-    return (project(":combined").tasks.getByName("jarJar") as Jar)
 }
 
 // maven.repo.local is set within the Julia script in the website branch
 tasks.create("publishAllMavens") {
-    // todo forge
-    for (proj in arrayOf(/*":forge", */":neoforge")) {
-        finalizedBy(project(proj).tasks.getByName("publishAllMavens"))
-    }
-}
-tasks.create("publishModPlatforms") {
-    finalizedBy(tasks.create("printPublishingMessage") {
-        this.doFirst {
-            println("Publishing Kotlin for Forge $kff_version to Modrinth and CurseForge")
-        }
-    })
-    finalizedBy(tasks.modrinth)
-    finalizedBy(tasks.curseforge)
+    dependsOn(":forge:publishAllMavens")
+    dependsOn(":neoforge:publishAllMavens")
 }
 
 task<Exec>("testREADME") {
@@ -115,9 +60,4 @@ task<Exec>("testREADME") {
     doLast {
         executionResult.get().assertNormalExitValue()
     }
-}
-
-// Kotlin function ambiguity fix
-fun <T> Property<T>.provider(value: T) {
-    set(value)
 }

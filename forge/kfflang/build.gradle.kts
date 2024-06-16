@@ -1,11 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.time.LocalDateTime
 
 plugins {
-    kotlin("jvm")
-    id("net.minecraftforge.gradle")
+    alias(libs.plugins.kotlinJvm)
+    alias(libs.plugins.forgegradle)
     `maven-publish`
-    eclipse
     idea
 }
 
@@ -13,13 +11,14 @@ val mc_version: String by project
 val forge_version: String by project
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
     withSourcesJar()
 }
 
 minecraft {
     mappings("official", mc_version)
     copyIdeResources.set(true)
+    reobf = false
 
     runs {
         create("client") {
@@ -44,7 +43,7 @@ minecraft {
         create("server") {
             workingDirectory(project.file("run/server"))
 
-            ideaModule = "KotlinForForge.forge.kfflang.test"
+            ideaModule = "KotlinForForge.forge.kfflang.main"
 
             property("forge.logging.markers", "LOADING,CORE")
             property("forge.logging.console.level", "debug")
@@ -62,25 +61,25 @@ minecraft {
     }
 }
 
-configurations {
-    runtimeElements {
-        setExtendsFrom(emptySet())
-    }
-    api {
-        minecraftLibrary.get().extendsFrom(this)
-        minecraftLibrary.get().exclude("org.jetbrains", "annotations")
-    }
+val nonMcLibs: Configuration by configurations.creating {
+    exclude(module = "annotations")
+}
+
+repositories {
+    mavenLocal()
 }
 
 dependencies {
-    minecraft("net.minecraftforge:forge:$mc_version-$forge_version")
+    minecraft(libs.forge)
+
+    configurations.getByName("api").extendsFrom(nonMcLibs)
 
     // Default classpath
-    api(kotlin("stdlib"))
-    api(kotlin("stdlib-common"))
-    api(kotlin("stdlib-jdk8"))
-    api(kotlin("stdlib-jdk7"))
-    api(kotlin("reflect"))
+    nonMcLibs(libs.kotlin.stdlib.jdk8)
+    nonMcLibs(libs.kotlin.reflect)
+
+    // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transitive dependencies request 6.0+
+    implementation("net.sf.jopt-simple:jopt-simple:5.0.4") { version { strictly("5.0.4") } }
 }
 
 tasks {
@@ -93,7 +92,6 @@ tasks {
                 "Implementation-Title" to project.name,
                 "Implementation-Version" to project.version,
                 "Implementation-Vendor" to "thedarkcolour",
-                "Implementation-Timestamp" to LocalDateTime.now(),
                 "Automatic-Module-Name" to "thedarkcolour.kotlinforforge.lang",
                 "FMLModType" to "LANGPROVIDER",
             )
@@ -106,20 +104,11 @@ tasks {
     }
 }
 
-// Workaround to remove build\classes\java from MOD_CLASSES because SJH doesn't like nonexistent dirs
-setOf(sourceSets.main, sourceSets.test)
-    .map(Provider<SourceSet>::get)
-    .forEach { sourceSet ->
-        val mutClassesDirs = sourceSet.output.classesDirs as ConfigurableFileCollection
-        val javaClassDir = sourceSet.java.classesDirectory.get()
-        val mutClassesFrom = mutClassesDirs.from
-            .filter {
-                val toCompare = (it as? Provider<*>)?.get()
-                return@filter javaClassDir != toCompare
-            }
-            .toMutableSet()
-        mutClassesDirs.setFrom(mutClassesFrom)
+configurations {
+    runtimeElements {
+        setExtendsFrom(emptySet())
     }
+}
 
 publishing {
     publications {
@@ -127,4 +116,10 @@ publishing {
             from(components["java"])
         }
     }
+}
+
+sourceSets.configureEach {
+    val dir = layout.buildDirectory.dir("sourcesSets/${name}")
+    output.setResourcesDir(dir)
+    java.destinationDirectory = dir
 }

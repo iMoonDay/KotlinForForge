@@ -1,3 +1,7 @@
+## Kotlin for Forge 5.3.0
+- Added Minecraft Forge support (doesn't work until [this PR](https://github.com/MinecraftForge/MinecraftForge/pull/9939) is merged)
+- 
+
 ## Kotlin for Forge 5.2.0
 - Updated to Kotlin 2.0.0, coroutines 1.8.1
 - Fixed broken JAR

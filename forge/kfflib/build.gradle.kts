@@ -1,22 +1,17 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.time.LocalDateTime
 
 plugins {
-    kotlin("jvm")
-    kotlin("plugin.serialization")
-    id("net.minecraftforge.gradle")
+    alias(libs.plugins.kotlinJvm)
+    alias(libs.plugins.forgegradle)
     `maven-publish`
-    eclipse
     idea
 }
 
 val mc_version: String by project
 val forge_version: String by project
-val coroutines_version: String by project
-val serialization_version: String by project
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
     withSourcesJar()
 }
 
@@ -103,34 +98,22 @@ configurations {
     }
 }
 
+repositories {
+    mavenLocal()
+}
+
 dependencies {
-    minecraft("net.minecraftforge:forge:$mc_version-$forge_version")
+    minecraft(libs.forge)
 
-    api(kotlin("stdlib-jdk8"))
-    api(kotlin("reflect"))
-    api("org.jetbrains.kotlinx", "kotlinx-coroutines-core", coroutines_version)
-    api("org.jetbrains.kotlinx", "kotlinx-coroutines-core-jvm", coroutines_version)
-    api("org.jetbrains.kotlinx", "kotlinx-coroutines-jdk8", coroutines_version)
-    api("org.jetbrains.kotlinx", "kotlinx-serialization-json", serialization_version)
+    implementation(projects.forge.kfflang)
 
-    implementation(project(":forge:kfflang"))
+    // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transitive dependencies request 6.0+
+    implementation("net.sf.jopt-simple:jopt-simple:5.0.4") { version { strictly("5.0.4") } }
 }
 
 tasks {
     withType<Jar> {
-        manifest {
-            attributes(
-                "Specification-Title" to "kfflib",
-                "Specification-Vendor" to "Forge",
-                "Specification-Version" to "1",
-                "Implementation-Title" to project.name,
-                "Implementation-Version" to project.version,
-                "Implementation-Vendor" to "thedarkcolour",
-                "Implementation-Timestamp" to LocalDateTime.now(),
-                "Automatic-Module-Name" to "thedarkcolour.kotlinforforge.lib",
-                "FMLModType" to "GAMELIBRARY"
-            )
-        }
+        manifest.attributes("FMLModType" to "GAMELIBRARY")
     }
     
     // Only require the lang provider to use explicit visibility modifiers, not the test mod

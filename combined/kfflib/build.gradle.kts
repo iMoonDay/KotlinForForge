@@ -4,12 +4,11 @@ plugins {
 
 tasks {
     jar {
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
         from(provider {
             listOf(
-                // todo forge
-                //zipTree((project(":forge:kfflib").tasks.getByName("jar") as Jar).archiveFile),
+                zipTree((project(":forge:kfflib").tasks.getByName("jar") as Jar).archiveFile),
                 zipTree((project(":neoforge:kfflib").tasks.getByName("jar") as Jar).archiveFile),
             )
         })

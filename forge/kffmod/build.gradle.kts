@@ -1,19 +1,15 @@
-import java.time.LocalDateTime
-
 plugins {
-    kotlin("jvm")
-    id("net.minecraftforge.gradle")
+    alias(libs.plugins.kotlinJvm)
+    alias(libs.plugins.forgegradle)
     `maven-publish`
-    eclipse
     idea
 }
 
 val mc_version: String by project
 val forge_version: String by project
-val kotlin_version: String by project
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
     withSourcesJar()
 }
 
@@ -53,37 +49,17 @@ configurations {
 }
 
 repositories {
-    mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
-    minecraft("net.minecraftforge:forge:$mc_version-$forge_version")
+    minecraft(libs.forge)
 
-    // Default classpath
-    api(kotlin("stdlib"))
-    api(kotlin("stdlib-common"))
-    api(kotlin("stdlib-jdk8"))
-    api(kotlin("stdlib-jdk7"))
-    api(kotlin("reflect"))
+    compileOnly(libs.kotlin.stdlib)
+    implementation(projects.forge.kfflib)
 
-    implementation(project(":forge:kfflang"))
-    implementation(project(":forge:kfflib"))
-}
-
-tasks {
-    withType<Jar> {
-        manifest {
-            attributes(
-                "Specification-Title" to "Kotlin for Forge",
-                "Specification-Vendor" to "Forge",
-                "Specification-Version" to "1",
-                "Implementation-Title" to project.name,
-                "Implementation-Version" to project.version,
-                "Implementation-Vendor" to "thedarkcolour",
-                "Implementation-Timestamp" to LocalDateTime.now()
-            )
-        }
-    }
+    // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transitive dependencies request 6.0+
+    implementation("net.sf.jopt-simple:jopt-simple:5.0.4") { version { strictly("5.0.4") } }
 }
 
 publishing {

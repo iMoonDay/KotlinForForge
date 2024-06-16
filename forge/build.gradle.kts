@@ -1,39 +1,20 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm")
-    id("net.minecraftforge.gradle") version "[6.0,6.2)"
-    id("com.modrinth.minotaur") version "2.+"
+    alias(libs.plugins.kotlinJvm)
+    alias(libs.plugins.forgegradle)
     `maven-publish`
-    id("com.matthewprenger.cursegradle") version "1.4.0"
 }
 
 // Current KFF version
 val kff_version: String by project
 val kffMaxVersion = "${kff_version.split('.')[0].toInt() + 1}.0.0"
-val kffGroup = "thedarkcolour"
-
-allprojects {
-    version = kff_version
-    group = kffGroup
-}
-
-evaluationDependsOnChildren()
 
 val mc_version: String by project
 val forge_version: String by project
 
-val coroutines_version: String by project
-val serialization_version: String by project
-
-val shadow: Configuration by configurations.creating {
-    exclude("org.jetbrains", "annotations")
-}
-
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-    withSourcesJar()
-}
+java.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 
 jarJar.enable()
 
@@ -42,13 +23,11 @@ configurations {
         artifacts.clear()
     }
     runtimeElements {
-        setExtendsFrom(emptySet())
+        // Include subprojects as transitive runtime dependencies
+        setExtendsFrom(hashSetOf(configurations.getByName("api")))
         // Publish the jarJar
         artifacts.clear()
         outgoing.artifact(tasks.jarJar)
-    }
-    minecraftLibrary {
-        extendsFrom(shadow)
     }
 }
 
@@ -73,34 +52,32 @@ extensions.getByType(net.minecraftforge.gradle.userdev.UserDevExtension::class).
 }
 
 repositories {
-    mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
-    minecraft("net.minecraftforge:forge:$mc_version-$forge_version")
+    minecraft(libs.forge)
 
-    shadow("org.jetbrains.kotlin:kotlin-reflect:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlin:kotlin-stdlib:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlin:kotlin-stdlib-common:${kotlin.coreLibrariesVersion}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:${coroutines_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-serialization-core:${serialization_version}")
-    shadow("org.jetbrains.kotlinx:kotlinx-serialization-json:${serialization_version}")
+    jarJarLib(libs.kotlin.reflect)
+    jarJarLib(libs.kotlin.stdlib.asProvider())
+    jarJarLib(libs.kotlin.stdlib.jdk7)
+    jarJarLib(libs.kotlin.stdlib.jdk8)
+    jarJarLib(libs.kotlinx.coroutines.core.asProvider())
+    jarJarLib(libs.kotlinx.coroutines.core.jvm)
+    jarJarLib(libs.kotlinx.coroutines.jdk8)
+    jarJarLib(libs.kotlinx.serialization.core)
+    jarJarLib(libs.kotlinx.serialization.json)
 
     // KFF Modules
-    implementation(include(project(":forge:kfflang"), kffMaxVersion))
-    implementation(include(project(":forge:kfflib"), kffMaxVersion))
-    implementation(include(project(":forge:kffmod"), kffMaxVersion))
+    api(projects.forge.kfflang)
+    api(projects.forge.kfflib)
+    api(projects.forge.kffmod)
+
+    implementation("net.sf.jopt-simple:jopt-simple:5.0.4") { version { strictly("5.0.4") } }
 }
 
 tasks {
-    jar {
-        enabled = false
-    }
-
     jarJar.configure {
-        from(provider { shadow.map(::zipTree).toTypedArray() })
         manifest {
             attributes(
                 "Automatic-Module-Name" to "thedarkcolour.kotlinforforge",
@@ -123,7 +100,7 @@ tasks {
     }
 
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
+        compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
     }
 
     assemble {
@@ -141,25 +118,32 @@ publishing {
     }
 }
 
-fun DependencyHandler.minecraft(
-    dependencyNotation: Any
-): Dependency? = add("minecraft", dependencyNotation)
+fun DependencyHandler.minecraft(dependencyNotation: Any): Dependency? = add("minecraft", dependencyNotation)
 
 // maven.repo.local is set within the Julia script in the website branch
 tasks.create("publishAllMavens") {
-    for (proj in arrayOf(":forge", ":forge:kfflib", ":forge:kfflang", ":forge:kffmod")) {
-        finalizedBy(project(proj).tasks.getByName("publishToMavenLocal"))
+    dependsOn(":forge:publishToMavenLocal")
+    dependsOn(":forge:kfflib:publishToMavenLocal")
+    dependsOn(":forge:kfflang:publishToMavenLocal")
+    dependsOn(":forge:kffmod:publishToMavenLocal")
+}
+
+fun DependencyHandler.jarJarLib(dependencyNotation: Provider<out ExternalModuleDependency>) {
+    val dep = dependencyNotation.get().copy()
+    jarJar("${dep.group}:${dep.name}:[${dep.version},)") {
+        jarJar.pin(this, dep.version!!)
+        isTransitive = false
     }
 }
 
-fun DependencyHandler.include(dep: ModuleDependency, maxVersion: String? = null): ModuleDependency {
+fun DependencyHandler.include(dep: Dependency): Dependency {
     api(dep) // Add module metadata compileOnly dependency
     jarJar(dep.copy()) {
-        isTransitive = false
-        jarJar.pin(this, version)
-        if (maxVersion != null) {
-            jarJar.ranged(this, "[$version,$maxVersion)")
+        if (this is ModuleDependency) {
+            isTransitive = false
         }
+        jarJar.pin(this, version)
+        jarJar.ranged(this, "[$version,$kffMaxVersion)")
     }
     return dep
 }

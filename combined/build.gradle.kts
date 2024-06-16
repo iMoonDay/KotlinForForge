@@ -15,7 +15,6 @@ plugins {
 
 val kff_version: String by project
 val kffMaxVersion = "${kff_version.split(".")[0].toInt() + 1}.0.0"
-val kffGroup = "thedarkcolour"
 
 base {
     archivesName.set("kotlinforforge")

@@ -1,6 +1,5 @@
 package thedarkcolour.kotlinforforgetest
 
-import net.minecraft.world.level.block.Block
 import net.neoforged.fml.common.Mod
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager

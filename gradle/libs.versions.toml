@@ -1,11 +1,16 @@
 [versions]
 kotlin = "2.0.0"
 coroutines = "1.8.1"
-serialization = "1.6.3"
-neogradle = "7.0.139"
-neoforge = "20.4.22-beta"
-fancymodloader = "3.0.45"
+serialization = "1.7.0"
+
+# Neo
+neogradle = "7.0.142"
+neoforge = "21.0.8-beta"
+fancymodloader = "[3,5)"
+# Lex
+forge = "1.21-51.0.8"
 forgegradle = "6.0.25"
+
 minotaur = "2.8.7"
 cursegradle = "1.4.0"
 
@@ -23,6 +28,7 @@ kotlinx-coroutines-jdk8 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-j
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "serialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 neoforge = { module = "net.neoforged:neoforge", version.ref = "neoforge" }
+forge = { module = "net.minecraftforge:forge", version.ref = "forge"}
 fancymodloader = { module = "net.neoforged.fancymodloader:loader", version.ref = "fancymodloader"}
 
 [plugins]

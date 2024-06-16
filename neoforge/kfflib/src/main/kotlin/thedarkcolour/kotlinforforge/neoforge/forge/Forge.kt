@@ -12,23 +12,13 @@ import kotlin.reflect.KProperty
 /**
  * Forge event bus.
  * Game events are fired on this bus.
- *
- * Examples:
- *   @see net.minecraftforge.event.entity.player.PlayerEvent
- *   @see net.minecraftforge.event.entity.living.LivingEvent
- *   @see net.minecraftforge.event.world.BlockEvent
  */
 public inline val FORGE_BUS: IEventBus
     get() = NeoForge.EVENT_BUS
 
 /**
  * Mod-specific event bus.
- * Mod lifecycle events are fired on this bus.
- *
- * Examples:
- *   @see net.minecraftforge.fml.event.lifecycle.InterModProcessEvent
- *   @see net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
- *   @see net.minecraftforge.registries.NewRegistryEvent
+ * Mod lifecycle events are fired on this bus, marked by implementing IModBus.
  */
 public inline val MOD_BUS: IEventBus
     get() = KotlinModLoadingContext.get().getKEventBus()

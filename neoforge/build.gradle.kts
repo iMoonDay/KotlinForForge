@@ -52,7 +52,7 @@ tasks.create("publishAllMavens") {
 
 fun DependencyHandler.includeJarJar(dependencyNotation: Provider<out ExternalModuleDependency>) {
     val dep = dependencyNotation.get().copy()
-    jarJar(dep) {
+    jarJar("${dep.group}:${dep.name}:[${dep.version},)") {
         version {
             prefer(dep.version!!)
         }
