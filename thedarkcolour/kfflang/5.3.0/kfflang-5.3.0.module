@@ -1,0 +1,112 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "thedarkcolour",
+    "module": "kfflang",
+    "version": "5.3.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.7"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 21,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk8",
+          "version": {
+            "requires": "2.0.0"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "annotations"
+            }
+          ]
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-reflect",
+          "version": {
+            "requires": "2.0.0"
+          },
+          "excludes": [
+            {
+              "group": "*",
+              "module": "annotations"
+            }
+          ]
+        }
+      ],
+      "files": [
+        {
+          "name": "kfflang-5.3.0.jar",
+          "url": "kfflang-5.3.0.jar",
+          "size": 23497,
+          "sha512": "1d8e4f9d5bd71e3840df37032d6ca00bc73cd0cb04c8c8aa32a879218369fa6569bfaf0626026c35d9255a44714913eebf8d15afaab4355dbe506fc9f88d920a",
+          "sha256": "43001e443b96bfc1c90610027e6f5b114f44dc98d526748e912cc9755c1ddc3a",
+          "sha1": "d55ec144f9f23ad97b7681c200651f155fddec4d",
+          "md5": "6f3b6cf6c3a6eebc8fbc60321d7194b3"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.environment": "standard-jvm",
+        "org.gradle.jvm.version": 21,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "jvm"
+      },
+      "files": [
+        {
+          "name": "kfflang-5.3.0.jar",
+          "url": "kfflang-5.3.0.jar",
+          "size": 23497,
+          "sha512": "1d8e4f9d5bd71e3840df37032d6ca00bc73cd0cb04c8c8aa32a879218369fa6569bfaf0626026c35d9255a44714913eebf8d15afaab4355dbe506fc9f88d920a",
+          "sha256": "43001e443b96bfc1c90610027e6f5b114f44dc98d526748e912cc9755c1ddc3a",
+          "sha1": "d55ec144f9f23ad97b7681c200651f155fddec4d",
+          "md5": "6f3b6cf6c3a6eebc8fbc60321d7194b3"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "kfflang-5.3.0-sources.jar",
+          "url": "kfflang-5.3.0-sources.jar",
+          "size": 7440,
+          "sha512": "5895d5ecc5ea62589cf0a10728495d8da8a22b7627d9a94d3e24ac01f37540447dec8af05c6950cd067322ecd6f724ba0b56d629e2159b22ade03b0578eaaa29",
+          "sha256": "50835913bbfe6dcf861591996d907c54c8a97a8bdf67e57548b7b93a483515af",
+          "sha1": "3d95bc3f1d19e8a48d3e76f10467dd6c9d3863c7",
+          "md5": "9435c348f5d61d31dbe9cf9703607016"
+        }
+      ]
+    }
+  ]
+}
