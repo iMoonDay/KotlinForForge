@@ -17,7 +17,7 @@ plugins {
 
 apply plugin: 'net.minecraftforge.gradle'
 
-version = '1.17.0'
+version = '1.19.2'
 group = 'thedarkcolour.kotlinforforge'
 archivesBaseName = 'kotlinforforge'
 
@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.1.4'
+    minecraft 'net.minecraftforge:forge:1.19.2-43.2.0'
 
     api group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: kotlin_version
     api group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk7', version: kotlin_version
@@ -45,7 +45,7 @@ dependencies {
 }
 
 minecraft {
-    mappings channel: 'official', version: '1.16.5'
+    mappings channel: 'official', version: '1.19.2'
 
     runs {
         client {
@@ -109,3 +109,5 @@ compileTestKotlin {
 kotlinSourcesJar {
     from(sourceSets.main.kotlin.srcDirs)
 }
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)

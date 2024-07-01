@@ -1,96 +1,37 @@
 package thedarkcolour.kotlinforforge.forge
 
-import net.minecraft.util.ResourceLocation
-import net.minecraftforge.event.RegistryEvent
-import net.minecraftforge.eventbus.api.IEventBus
-import net.minecraftforge.fml.RegistryObject
 import net.minecraftforge.registries.DeferredRegister
-import net.minecraftforge.registries.IForgeRegistry
-import net.minecraftforge.registries.IForgeRegistryEntry
-import net.minecraftforge.registries.RegistryManager
-import thedarkcolour.kotlinforforge.eventbus.KotlinEventBus
+import net.minecraftforge.registries.RegistryObject
+import java.util.function.Supplier
 import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
 /**
- * Alternative version of [DeferredRegister] that creates
- * [ObjectHolderDelegate] instances instead of [RegistryObject].
+ * @property registryObject For getting the ID or any other properties of the RegistryObject
  */
-public class KDeferredRegister<V : IForgeRegistryEntry<V>>(
-    public val registry: IForgeRegistry<V>,
-    public val modid: String,
-) {
-    /**
-     * A map of all registry objects and their value suppliers.
-     */
-    private val entries = LinkedHashMap<ObjectHolderDelegate<out V>, () -> V>()
+public class ObjectHolderDelegate<V>(public val registryObject: RegistryObject<V>) : ReadOnlyProperty<Any?, V>, Supplier<V>, () -> V {
+    override fun getValue(thisRef: Any?, property: KProperty<*>): V = registryObject.get()
+    override fun invoke(): V = registryObject.get()
+    override fun get(): V = registryObject.get()
+}
 
-    /**
-     * Alternative constructor that uses a class instead of a registry.
-     */
-    public constructor(registryClass: Class<V>, modid: String) : this(RegistryManager.ACTIVE.getRegistry(registryClass), modid)
+/**
+ * Returns a registry object that can be used as a property delegate
+ *
+ * @param name Path used in the registry name of this object
+ * (if modid of deferred register is "foo", name "bar" would create "foo:bar")
+ * @param supplier Supplier to use for the internal registry object
+ *
+ * @param V Type of deferred register
+ * @param T Specific type of object being registered
+ */
+public fun <V, T : V> DeferredRegister<V>.registerObject(
+    name: String,
+    supplier: () -> T,
+): ObjectHolderDelegate<T>
+{
+    val registryObject = this.register(name, supplier)
 
-    /**
-     * Registers this deferred register to the `KotlinEventBus`.
-     */
-    public fun register(bus: KotlinEventBus) {
-        bus.addGenericListener(registry.registrySuperType, ::addEntries)
-    }
-
-    /**
-     * Registers this deferred register to the `IEventBus`.
-     */
-    @Deprecated("Use a KotlinEventBus. Forge's EventBus does not support function references for event listeners.")
-    public fun register(bus: IEventBus) {
-        // function references are not supported by Forge's eventbus
-        bus.addGenericListener(registry.registrySuperType) { event: RegistryEvent.Register<V> ->
-            addEntries(event)
-        }
-    }
-
-
-    /**
-     * Adds a registry object to this deferred registry.
-     *
-     * @param name the path of the new registry object's registry name with namespace [modid]
-     * @param supplier the function to initialize the value of the new registry object with and
-     *                 to reset the value when forge adds reloadable registries.
-     *
-     * @return A new [ObjectHolderDelegate] with the given registry name and value
-     */
-    public fun <T : V> registerObject(name: String, supplier: () -> T): ObjectHolderDelegate<T> {
-        val key = ResourceLocation(modid, name)
-        val a = ObjectHolderDelegate<T>(key, registry)
-
-        entries[a] = { supplier().setRegistryName(key) }
-
-        return a
-    }
-
-    /**
-     * Older function that only returns a property delegate.
-     */
-    @Deprecated(
-        message = "Use `registerObject` for ObjectHolderDelegate return type",
-        replaceWith = ReplaceWith("registerObject(name, supplier)")
-    )
-    public fun <T : V> register(name: String, supplier: () -> T): ReadOnlyProperty<Any?, T> {
-        return registerObject(name, supplier)
-    }
-
-    public fun getEntries(): Set<ObjectHolderDelegate<out V>> {
-        return entries.keys
-    }
-
-    /**
-     * Adds all entries in this registry to the corresponding game registries.
-     */
-    private fun addEntries(event: RegistryEvent.Register<V>) {
-        val registry = event.registry
-
-        for ((objectHolder, supplier) in entries) {
-            registry.register(supplier())
-            // pass true to always update the entry
-            objectHolder.accept { true }
-        }
-    }
+    // note that this anonymous class inherits three types
+    return ObjectHolderDelegate(registryObject)
 }

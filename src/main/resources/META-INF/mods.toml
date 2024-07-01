@@ -1,27 +1,28 @@
+# Make sure this is set to "kotlinforforge"
 modLoader="kotlinforforge"
-loaderVersion="[1.16.0,)"
-license="LGPL v2.1"
+# Make sure this is set to the appropriate version range
+loaderVersion="[3,)" # Require at least 3.x
+# License is REQUIRED after 1.16
+license='LGPL'
 
 [[mods]]
-displayName="Kotlin for Forge"
 modId="kotlinforforge"
-version="1.16.0"
-authors="TheDarkColour"
-credits="Herobrine knows all. Thanks to Username404-59 and TheOnlyTails on GitHub"
-issueTrackerURL="https://github.com/thedarkcolour/KotlinForForge/issues"
+version="${file.jarVersion}"
+displayName="Kotlin For Forge"
+credits="thedarkcolour and his \"minions\""
+authors="thedarkcolour"
 description='''
-Kotlin for Forge. Allows mods to use the Kotlin programming language.
+Makes Kotlin forge-friendly
 '''
-
 [[dependencies.kotlinforforge]]
 modId="forge"
 mandatory=true
-versionRange="[28,)"
+versionRange="[38,)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.kotlinforforge]]
 modId="minecraft"
 mandatory=true
-versionRange="[1.14,1.17)"
+versionRange="[1.18,1.19.3)"
 ordering="NONE"
 side="BOTH"

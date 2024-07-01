@@ -2,23 +2,19 @@ package thedarkcolour.kotlinforforge
 
 import net.minecraftforge.api.distmarker.Dist
 import net.minecraftforge.fml.Logging
-import net.minecraftforge.fml.ModContainer
 import net.minecraftforge.fml.common.Mod
+import net.minecraftforge.fml.loading.FMLEnvironment
 import net.minecraftforge.fml.loading.moddiscovery.ModAnnotation
 import net.minecraftforge.forgespi.language.ModFileScanData
 import org.objectweb.asm.Type
-import thedarkcolour.kotlinforforge.forge.DIST
-import thedarkcolour.kotlinforforge.forge.FORGE_BUS
-import thedarkcolour.kotlinforforge.forge.MOD_BUS
-import thedarkcolour.kotlinforforge.kotlin.enumSet
+import java.util.*
 
-/** @since 1.0.0
+/**
  * Automatically registers `object` classes to
  * Kotlin for Forge's event buses.
  *
- *  @since 1.12.2
- * Mod.EventBusSubscriber can now be applied as a file annotation.
- * Any functions annotated with @SubscribeEvent in the annotated file will be registered.
+ * This also allows [Mod.EventBusSubscriber] to be used as a file-wide annotation,
+ * registering any top-level functions annotated with @SubscribeEvent to the event bus.
  *
  * Example:
  * ```
@@ -32,12 +28,13 @@ import thedarkcolour.kotlinforforge.kotlin.enumSet
  * }
  * ```
  *
- * @see MOD_BUS
- * @see FORGE_BUS
+ * @see thedarkcolour.kotlinforforge.forge.MOD_BUS
+ * @see thedarkcolour.kotlinforforge.forge.FORGE_BUS
  */
 public object AutoKotlinEventBusSubscriber {
-    /** The [Mod.EventBusSubscriber] java type. */
+    // EventBusSubscriber annotation
     private val EVENT_BUS_SUBSCRIBER: Type = Type.getType(Mod.EventBusSubscriber::class.java)
+
     /** The default (client & server) list of [Dist] enum holders. */
     private val DIST_ENUM_HOLDERS = listOf(
         ModAnnotation.EnumHolder(null, "CLIENT"),
@@ -54,9 +51,11 @@ public object AutoKotlinEventBusSubscriber {
      * I am against using `Mod.EventBusSubscriber`
      * because it makes it difficult to follow where event
      * listeners are registered. Instead, prefer to directly
-     * register event listeners to the [FORGE_BUS] or [MOD_BUS].
+     * register event listeners to
+     * [thedarkcolour.kotlinforforge.forge.FORGE_BUS]
+     * or [thedarkcolour.kotlinforforge.forge.MOD_BUS].
      */
-    public fun inject(mod: ModContainer, scanData: ModFileScanData, classLoader: ClassLoader) {
+    public fun inject(mod: KotlinModContainer, scanData: ModFileScanData, classLoader: ClassLoader) {
         LOGGER.debug(Logging.LOADING, "Attempting to inject @EventBusSubscriber kotlin objects in to the event bus for ${mod.modId}")
 
         val data = scanData.annotations.filter { annotationData ->
@@ -65,13 +64,13 @@ public object AutoKotlinEventBusSubscriber {
 
         for (annotationData in data) {
             val sidesValue = annotationData.annotationData.getOrDefault("value", DIST_ENUM_HOLDERS) as List<ModAnnotation.EnumHolder>
-            val sides = enumSet<Dist>().plus(sidesValue.map { eh -> Dist.valueOf(eh.value) })
+            val sides = EnumSet.noneOf(Dist::class.java).plus(sidesValue.map { eh -> Dist.valueOf(eh.value) })
             val modid = annotationData.annotationData.getOrDefault("modid", mod.modId)
             val busTargetHolder = annotationData.annotationData.getOrDefault("bus", ModAnnotation.EnumHolder(null, "FORGE")) as ModAnnotation.EnumHolder
             val busTarget = Mod.EventBusSubscriber.Bus.valueOf(busTargetHolder.value)
 
-            if (mod.modId == modid && DIST in sides) {
-                val kClass = Class.forName(annotationData.classType.className, true, classLoader).kotlin
+            if (mod.modId == modid && FMLEnvironment.dist in sides) {
+                val kClass = Class.forName(annotationData.clazz.className, true, classLoader).kotlin
 
                 var ktObject: Any?
 
@@ -81,19 +80,19 @@ public object AutoKotlinEventBusSubscriber {
                     if (unsupported.message?.contains("file facades") == false) {
                         throw unsupported
                     } else {
-                        LOGGER.debug(Logging.LOADING, "Auto-subscribing kotlin file ${annotationData.classType.className} to $busTarget")
-                        registerTo(kClass.java, busTarget)
+                        LOGGER.debug(Logging.LOADING, "Auto-subscribing kotlin file ${annotationData.annotationType.className} to $busTarget")
+                        registerTo(kClass.java, busTarget, mod)
                         continue
                     }
                 }
 
                 if (ktObject != null) {
                     try {
-                        LOGGER.debug(Logging.LOADING, "Auto-subscribing kotlin object ${annotationData.classType.className} to $busTarget")
+                        LOGGER.debug(Logging.LOADING, "Auto-subscribing kotlin object ${annotationData.annotationType.className} to $busTarget")
 
-                        registerTo(ktObject, busTarget)
+                        registerTo(ktObject, busTarget, mod)
                     } catch (e: Throwable) {
-                        LOGGER.fatal(Logging.LOADING, "Failed to load mod class ${annotationData.classType} for @EventBusSubscriber annotation", e)
+                        LOGGER.fatal(Logging.LOADING, "Failed to load mod class ${annotationData.annotationType} for @EventBusSubscriber annotation", e)
                         throw RuntimeException(e)
                     }
                 }
@@ -101,11 +100,11 @@ public object AutoKotlinEventBusSubscriber {
         }
     }
 
-    private fun registerTo(any: Any, target: Mod.EventBusSubscriber.Bus) {
-        if (target == Mod.EventBusSubscriber.Bus.MOD) {
-            MOD_BUS.register(any)
+    private fun registerTo(any: Any, target: Mod.EventBusSubscriber.Bus, mod: KotlinModContainer) {
+        if (target == Mod.EventBusSubscriber.Bus.FORGE) {
+            target.bus().get().register(any)
         } else {
-            FORGE_BUS.register(any)
+            mod.eventBus.register(any)
         }
     }
 }
